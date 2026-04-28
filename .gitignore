@@ -1,0 +1,20 @@
+# Dependencies (puede regenerar npm install)
+node_modules/
+
+# React/Vite build
+dist/
+
+# Environment variables (contenido sensible)
+.env
+.env.*
+
+# Java/Spring Boot build (se genera al compilar con Sptring Boot)
+target/
+
+# IDE/editor files
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
