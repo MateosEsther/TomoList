@@ -8,7 +8,7 @@ persistente. La idea es original del proyecto final creado con stack básico
 para FP de desarrollo de aplicaciones web pero ahora con stack de vanguardia.
 
 ## Stack anterior vs. Stack previsto
-- Frontend: JS y HTML → React + Vite
+- Frontend: JavaScript + HTML + CSS → React + Vite + TypeScript + SCSS
 - Backend: PHP → Java + Spring Boot
 - BD: MariaDB/MySQL → PostgreSQL
 - Control de versiones: N/A → Git + Github
