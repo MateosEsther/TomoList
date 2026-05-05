@@ -1,0 +1,41 @@
+/* Contenedor principal de la pantalla inicial.*/
+    .homePage {
+        min-height: 100vh; /*Para coupar toda la altura visible.*/
+        display: grid;/*organizar las secciones flexibles.*/
+        gap: var(--spacing-lg);
+    }
+
+    /*Estilo compartido para los dos bloques principales.*/
+    .heroSection,
+    .authSection {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        background: var(--surface-dark);
+        padding: var(--spacing-lg);
+    }
+
+    /*Bloque informativo.Identidad visual principal.*/
+    .heroSection {
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            line-height: 1;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        p {
+            color: var(--text-light-soft);
+            font-size: 1.125rem;
+        }
+    }
+
+    /*Bloque de acceso (login/registro/recuperación password).*/
+    .authSection {
+        h2 {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        p {
+            color: var(--text-dim);
+        }
+    }
+    

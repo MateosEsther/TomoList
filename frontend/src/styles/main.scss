@@ -1,3 +1,5 @@
+/* Archivo principal de estilos globales. Carga las piezas base del sistema visual.
+    Es el archivo que se importa en main.tsx.*/
 @use "./abstracts/variables";
 @use "./base/reset";
 @use "./base/base";
