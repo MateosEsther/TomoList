@@ -1,17 +1,8 @@
-// App es el componente principal de React.
+// App es el componente principal de React y carga la HomePage.
+import HomePage from './pages/HomePage/HomePage'
 
 function App() {
-    return (
-        <main>
-        <section>
-            <h1>TomoList</h1>
-
-            <p>
-            Aplicación para organizar lecturas de manga y literatura.
-            </p>
-        </section>
-        </main>
-    )
+    return <HomePage />
 }
 
 export default App
