@@ -1,0 +1,11 @@
+body {
+    min-height: 100vh;
+    font-family: var(--font-main);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
+main {
+    min-height: 100vh;
+    padding: var(--spacing-lg);
+}
