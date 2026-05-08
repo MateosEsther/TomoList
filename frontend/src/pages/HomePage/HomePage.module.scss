@@ -23,6 +23,7 @@
 .heroContent {
     max-width: 720px;
     margin: 0 auto;
+    text-align: center;
 
     h1 {
         margin-bottom: var(--spacing-sm);
@@ -55,11 +56,7 @@
     background: var(--surface-glass);
     box-shadow: var(--shadow-sm);
     backdrop-filter: blur(6px);
-
-    h2 {
-        font-size: 1rem;
-        font-weight: 800;
-    }
+    text-align: center;
 
     p {
         color: var(--text-light-soft);
@@ -67,18 +64,38 @@
     }
 }
 
+/*Cabecera de las cards. Agrupa icono y h2*/
+.featureHeader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+
+    h2{
+        font-size: 1rem;
+        font-weight: 800;
+    }
+}
+
 /*Iconos decorativos*/
 .featureIcon {
     color: var(--accent-yellow);
+    display: inline-flex;
 
     svg {
-        width: 2rem;
-        height: 2rem;
+        width: 1.6rem;
+        height: 1.6rem;
         stroke-width: 2;
     }
 }
 
 /*Sección de acceso (login/registro/recuperación password).*/
+/*Centra la tarjeta*/
+.authPanel {
+    display: grid;
+    align-items: center;
+}
+
 .authCard {
     width: 100%;
     max-width: 560px;
@@ -88,6 +105,7 @@
     border-radius: var(--radius-lg);
     background: var(--surface-dark);
     box-shadow: var(--shadow-md);
+    
 
     h2 {
         margin-bottom: var(--spacing-sm);
@@ -172,6 +190,7 @@ margin-bottom: 0;
     .homePage {
         grid-template-columns: 1fr 1fr;
         align-items: center;
+        column-gap: var(--spacing-md);
     }
 
     .heroSection,

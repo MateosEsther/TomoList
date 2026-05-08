@@ -24,35 +24,43 @@ function HomePage() {
                 {/* Tarjetas informativas.*/}
                 <div className={styles.featureGrid}>
                     <article className={styles.featureCard}>
-                        <span className={styles.featureIcon} aria-hidden="true">
-                            <LibraryBig />
-                        </span>
-                        <h2>Crea tu propia biblioteca</h2>
-                        <p>Organiza tus lecturas en listas y guárdalas para acceder a ellas en cualquier momento.</p>
+                        <div className={styles.featureHeader}>
+                            <span className={styles.featureIcon} aria-hidden="true">
+                                <LibraryBig />
+                            </span>
+                            <h2>Crea tu propia biblioteca</h2>
+                        </div>
+                    <p>Organiza tus lecturas en listas y guárdalas para acceder a ellas en cualquier momento.</p>
+                    </article>
+                
+                    <article className={styles.featureCard}>
+                        <div className={styles.featureHeader}>
+                            <span className={styles.featureIcon} aria-hidden="true">
+                                <ListCheck />
+                            </span>
+                            <h2>Haz listas de lecturas pendientes</h2>
+                        </div>
+                    <p>Así tendrás organizadas las próximas lecturas para cuando llegue el momento de elegir la siguiente aventura.</p>
                     </article>
 
                     <article className={styles.featureCard}>
-                        <span className={styles.featureIcon} aria-hidden="true">
-                            <ListCheck />
-                        </span>
-                        <h2>Haz listas de lecturas pendientes</h2>
-                        <p>Así tendrás organizadas las próximas lecturas para cuando llegue el momento de elegir la siguiente aventura.</p>
+                        <div className={styles.featureHeader}>
+                            <span className={styles.featureIcon} aria-hidden="true">
+                                <Star />
+                            </span>
+                            <h2>Valóralas</h2>
+                        </div>
+                    <p>Puntúa las lecturas según tus opiniones.</p>
                     </article>
 
                     <article className={styles.featureCard}>
-                        <span className={styles.featureIcon} aria-hidden="true">
-                            <Star />
-                        </span>
-                        <h2>Valóralas</h2>
-                        <p>Puntúa las lecturas según tus opiniones.</p>
-                    </article>
-
-                    <article className={styles.featureCard}>
-                        <span className={styles.featureIcon} aria-hidden="true">
-                            <MessageSquareText />
-                        </span>
-                        <h2>Coméntalas</h2>
-                        <p>Escribe reseñas para recordar tus impresiones.</p>
+                        <div className={styles.featureHeader}>
+                            <span className={styles.featureIcon} aria-hidden="true">
+                                <MessageSquareText />
+                            </span>
+                            <h2>Coméntalas</h2>
+                        </div>
+                    <p>Escribe reseñas para recordar tus impresiones.</p>
                     </article>
                 </div>
 
