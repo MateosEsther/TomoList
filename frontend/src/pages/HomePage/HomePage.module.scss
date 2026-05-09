@@ -179,9 +179,14 @@
 margin-top: var(--spacing-md);
 margin-bottom: 0;
 
-    span {
+    a {
         color: #fb7185;
         font-weight: 700;
+        text-decoration: none;
+
+        &:hover {
+            color: #f43f5e;
+        }
     }
 }
 

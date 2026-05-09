@@ -125,9 +125,14 @@
     margin-bottom: 0;
     text-align: center;
 
-    span {
+    a {
         color: #fb7185;
         font-weight: 700;
+        text-decoration: none;
+
+        &:hover {
+            color: #f43f5e;
+        }
     }
 }
 

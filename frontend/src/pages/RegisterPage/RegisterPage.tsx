@@ -1,4 +1,5 @@
 import styles from './RegisterPage.module.scss'
+import { Link } from 'react-router'
 
 function RegisterPage() {
     return (
@@ -62,7 +63,7 @@ function RegisterPage() {
                         <button type="button">Crear cuenta</button>
                     </form>
                     <p className={styles.loginLinkText}>
-                        ¿Ya tienes cuenta? <span>Inicia sesión</span>
+                        ¿Ya tienes cuenta? <Link to='/'>Inicia sesión</Link>
                     </p>
                 </div>
             </section>

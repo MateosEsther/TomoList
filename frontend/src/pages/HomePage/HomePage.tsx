@@ -1,11 +1,15 @@
 // Importa los estilos como CSSModule, evita que las clases sean globales y afecten a otras partes de la app.
 import styles from './HomePage.module.scss'
+// Importa iconos.
 import {
     LibraryBig,
     ListCheck,
     Star,
     MessageSquareText,
 } from 'lucide-react'
+// Enrutamiento
+import { Link } from 'react-router'
+
 
 // Pantalla inicial de TomoList.
 function HomePage() {
@@ -93,7 +97,7 @@ function HomePage() {
                 </form>
 
                 <p className={styles.authLinkText}>
-                    ¿No tienes cuenta? <span>Crear cuenta</span>
+                    ¿No tienes cuenta? <Link to="/register">Crear cuenta</Link>
                 </p>
             </div>
         </section>
