@@ -93,6 +93,10 @@ function HomePage() {
                         placeholder="*******"
                     />
 
+                    <Link className={styles.forgotPasswordLink} to="/forgot-password">
+                        ¿Has olvidado tu constraseña?
+                    </Link>
+
                     <button type="button">Iniciar sesión</button>
                 </form>
 
