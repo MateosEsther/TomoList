@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import styles from './ForgotPasswordPage.module.scss'
+import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 
 function ForgotPasswordPage() {
     return (
@@ -7,8 +8,8 @@ function ForgotPasswordPage() {
             {/*Sección izquierda. Flujo de recuperación.*/}
             <section className={styles.heroSection}>
                 <div className={styles.heroContent}>
-                    <h1>Recupera tu acceso</h1>
-                    <p>Introduce tu email para recuperar tu cuenta y crear una nueva contraseña.</p>
+                    <h1>TomoList</h1>
+                    <p>Recupera el acceso a tu cuenta y vuelve a organizar tus lecturas.</p>
                 </div>
             </section>
 
@@ -26,7 +27,7 @@ function ForgotPasswordPage() {
                             type="email"
                             placeholder="tu@email.com"
                         />
-                        <button type="button">Recuperar cuenta</button>
+                        <PrimaryButton>Recuperar cuenta</PrimaryButton>
                     </form>
 
                     <p className={styles.loginLinkText}>

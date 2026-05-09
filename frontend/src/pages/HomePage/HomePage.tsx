@@ -9,6 +9,8 @@ import {
 } from 'lucide-react'
 // Enrutamiento
 import { Link } from 'react-router'
+// Componentes
+import PrimaryButton from '../../components/PrimaryButton/PrimaryButton'
 
 
 // Pantalla inicial de TomoList.
@@ -97,7 +99,7 @@ function HomePage() {
                         ¿Has olvidado tu constraseña?
                     </Link>
 
-                    <button type="button">Iniciar sesión</button>
+                    <PrimaryButton>Iniciar sesión</PrimaryButton>
                 </form>
 
                 <p className={styles.authLinkText}>

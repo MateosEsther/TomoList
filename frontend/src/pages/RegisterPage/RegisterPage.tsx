@@ -1,5 +1,6 @@
 import styles from './RegisterPage.module.scss'
 import { Link } from 'react-router'
+import PrimaryButton from '../../components/PrimaryButton/PrimaryButton'
 
 function RegisterPage() {
     return (
@@ -60,7 +61,7 @@ function RegisterPage() {
                             placeholder="********"
                         />
 
-                        <button type="button">Crear cuenta</button>
+                        <PrimaryButton>Crear cuenta</PrimaryButton>
                     </form>
                     <p className={styles.loginLinkText}>
                         ¿Ya tienes cuenta? <Link to='/'>Inicia sesión</Link>
