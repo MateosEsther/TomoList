@@ -7,7 +7,7 @@ import {
     Star,
     MessageSquareText,
 } from 'lucide-react'
-// Enrutamiento
+// Enrutamiento. Enlaces internos sin recargar.
 import { Link } from 'react-router'
 // Componentes
 import PrimaryButton from '../../components/PrimaryButton/PrimaryButton'
