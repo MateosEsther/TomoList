@@ -4,124 +4,6 @@
     gap: var(--spacing-lg);
 }
 
-/*Sidebar área privada. En móvil: bloque superior. En escritorio: columna lateral fija.*/
-.sidebar {
-    display: grid;
-    align-content: start;
-    gap: var(--spacing-md);
-    padding: var(--spacing-md);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    background: var(--surface-aside);
-    box-shadow: var(--shadow-md);
-}
-
-/* Marca principal de la app dentro del área privada. */
-.brand {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-sm);
-    border-radius: var(--radius);
-    background: rgba(255, 255, 255, 0.04);
-
-    svg {
-        width: 1.75rem;
-        height: 1.75rem;
-        color: var(--accent-yellow);
-    }
-
-    strong {
-        font-size: 1.5rem;
-        font-weight: 800;
-    }
-}
-
-/*Bloque usuario.*/
-.userBox {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-sm);
-    border-radius: var(--radius);
-    border: 1px solid var(--border-soft);
-    background: rgba(255, 255, 255, 0.04);
-}
-
-/*Avatar del usuario.*/
-.userAvatar {
-    display: grid;
-    place-items: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
-    border: 1px solid var(--border-soft);
-    background: linear-gradient(
-        135deg,
-        var(--gradient-left-1) 0%,
-        var(--gradient-left-2) 50%,
-        var(--gradient-left-3) 100%
-    );
-    color: var(--text-light);
-    font-weight: 800;
-    line-height: 1;
-    flex: 0 0 auto;
-}
-
-.userName {
-    margin: 0;
-    font-weight: 800;
-}
-
-.userEmail {
-    margin: 0;
-    color: var(--text-dim);
-    font-size: 0.85rem;
-}
-
-/*Navegación lateral interna.*/
-.sidebarNav {
-    display: grid;
-    gap: 0.35rem;
-
-    a {
-        padding: 0.65rem 0.75rem;
-        border-radius: var(--radius);
-        color: var(--text-main);
-        text-decoration: none;
-        border: 1px solid transparent;
-
-        &:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-    }
-}
-
-/*Enlace principal para añadir tomo.*/
-.addTomeLink {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-sm);
-    margin-top: var(--spacing-sm);
-    padding: 0.75rem 1rem;
-    border-radius: var(--radius-lg);
-    background: var(--primary-600);
-    color: var(--text-light);
-    text-decoration: none;
-    font-weight: 800;
-    box-shadow: var(--shadow-md);
-
-    svg {
-        width: 1.1rem;
-        height: 1.1rem;
-    }
-
-    &:hover {
-        background: var(--primary-700);
-    }
-}
-
 /*Contenido principal de la página.*/
 .content {
     display: grid;
@@ -129,7 +11,6 @@
     gap: var(--spacing-lg);
 }
 
-/*Cabecera de la vista.*/
 .pageHeader {
     display: grid;
     gap: var(--spacing-sm);
@@ -157,7 +38,7 @@
     box-shadow: var(--shadow-sm);
 }
 
-/*Buscador visual.*/
+/*Buscador.*/
 .searchBox {
     display: flex;
     align-items: center;
@@ -186,7 +67,7 @@
     }
 }
 
-/*Filtros visuales.*/
+/*Filtros.*/
 .filters {
     display: grid;
     gap: var(--spacing-sm);
@@ -320,12 +201,6 @@
     .myListsPage {
         grid-template-columns: 260px 1fr;
         gap: var(--spacing-lg);
-    }
-
-    .sidebar {
-        position: sticky;
-        top: var(--spacing-lg);
-        height: calc(100vh - (var(--spacing-lg) * 2));
     }
 
     .toolsPanel {

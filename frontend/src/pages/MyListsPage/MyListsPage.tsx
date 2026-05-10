@@ -1,48 +1,16 @@
-import { Link } from 'react-router'
 import {
-    BookOpen,
-    Plus,
     Search,
     Filter,
     CalendarDays,
 } from 'lucide-react'
 import styles from './MyListsPage.module.scss'
+import PrivateSidebar from '../../components/PrivateSidebar/PrivateSidebar'
 
 function MyListsPage() {
     return (
         <div className={styles.myListsPage}>
-            {/*Sidebar lateral*/}
-            <aside className={styles.sidebar}>
-                <div className={styles.brand}>
-                    <BookOpen aria-hidden="true" />
-                    <strong>TomoList</strong>
-                </div>
-
-                {/*Bloque de usuario.*/}
-                <section className={styles.userBox}>
-                    <div className={styles.userAvatar} aria-hidden="true">
-                        E
-                    </div>
-                    <div>
-                        <p className={styles.userName}>Esther</p>
-                        <p className={styles.userIcon}>usuario@tomolist.com</p>
-                    </div>
-                </section>
-
-                {/*Navegación interna.*/}
-                <nav className={styles.sidebarNav} aria-label="Navegación principal">
-                    <Link to="/mis-listas">Mis listas</Link>
-                    <Link to="/mis-listas">Pendientes</Link>
-                    <Link to="/mis-listas">Leídas</Link>
-                    <Link to="/mis-listas">Mi perfil</Link>
-                </nav>
-
-                {/*Añadir tomo.*/}
-                <Link className={styles.addTomeLink} to="/anadir-tomo">
-                    <Plus aria-hidden="true" />
-                    Añadir tomo
-                </Link>
-            </aside>
+            {/*Llama al privateSidebar importado de componentes.*/}
+            <PrivateSidebar />
 
             {/*Contenido principal.*/}
             <main className={styles.content}>
@@ -53,7 +21,7 @@ function MyListsPage() {
                     </div>
                 </header>
 
-                {/*Accesos visuales a las princiaples listas.*/}
+                {/*Accesos visuales a las principales listas.*/}
                 <section className={styles.listsGrid}>
                     <article className={styles.listCard}>
                         <h2>Manga pendiente</h2>
@@ -81,7 +49,7 @@ function MyListsPage() {
 
                         <span className={styles.dateInfo}>
                             <CalendarDays aria-hidden="true" />
-                            Fecha de finalización disponible en cada lectura
+                            Información de lectura disponible en cada registro
                         </span>
                     </article>
 
@@ -91,7 +59,7 @@ function MyListsPage() {
 
                         <span className={styles.dateInfo}>
                             <CalendarDays aria-hidden="true" />
-                            Fecha de finalización disponible en cada lectura
+                            Información de lectura disponible en cada registro
                         </span>
                     </article>
                 </section>
@@ -113,8 +81,8 @@ function MyListsPage() {
                             Tipo
                             <select defaultValue="all">
                                 <option value="all">Todos</option>
-                                <option value="all">Manga</option>
-                                <option value="all">Literatura</option>
+                                <option value="manga">Manga</option>
+                                <option value="literature">Literatura</option>
                             </select>
                         </label>
 
@@ -122,8 +90,8 @@ function MyListsPage() {
                             Estado
                             <select defaultValue="all">
                                 <option value="all">Todos</option>
-                                <option value="all">Pendiente</option>
-                                <option value="all">Leído</option>
+                                <option value="pending">Pendiente</option>
+                                <option value="read">Leído</option>
                             </select>
                         </label>
                     </div>

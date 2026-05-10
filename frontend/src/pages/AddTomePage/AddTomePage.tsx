@@ -1,13 +1,10 @@
 //Trae de React la función useState para que un componente recuerde un valor mientras usa la app
 //y lo renderiza con el nuevo estado.
 import { useState } from 'react';
-import { Link } from 'react-router'
-import {
-    BookOpen,
-    Plus,
-} from 'lucide-react'
 import PrimaryButton from '../../components/PrimaryButton/PrimaryButton';
+import PrivateSidebar from '../../components/PrivateSidebar/PrivateSidebar';
 import styles from './AddTomePage.module.scss'
+
 
 function AddTomePage() {
     //Guardar el estado seleccionado o vacío si todavía no ha elegido nada.
@@ -19,35 +16,8 @@ function AddTomePage() {
 
     return (
         <div className={styles.addTomePage}>
-            {/*Sidebar lateral.*/}
-            <aside className={styles.sidebar}>
-                <div className={styles.brand}>
-                    <BookOpen aria-hidden="true" />
-                    <strong>TomoList</strong>
-                </div>
-
-                <section className={styles.userBox}>
-                    <div className={styles.userAvatar} aria-hidden="true">
-                        E
-                    </div>
-                    <div>
-                        <p className={styles.userName}>Esther</p>
-                        <p className={styles.userEmail}>usuario@tomolist.com</p>
-                    </div>
-                </section>
-
-                <nav className={styles.sidebarNav} aria-label="Navegación principal">
-                    <Link to="/mis-listas">Mis listas</Link>
-                    <Link to="/mis-listas">Pendientes</Link>
-                    <Link to="/mis-listas">Leídas</Link>
-                    <Link to="/mis-listas">Mi perfil</Link>
-                </nav>
-
-                <Link className={styles.addTomeLink} to="/anadir-tomo">
-                    <Plus aria-hidden="true" />
-                    Añadir tomo
-                </Link>
-            </aside>
+            {/*Llama al privateSidebar reutilizable de componentes.*/}
+                <PrivateSidebar />
         
             {/*Contenido principal*/}
             <main className={styles.content}>
