@@ -38,7 +38,7 @@ function MyListsPage() {
                 </nav>
 
                 {/*Añadir tomo.*/}
-                <Link className={styles.addTomeLink} to="/mis-listas">
+                <Link className={styles.addTomeLink} to="/anadir-tomo">
                     <Plus aria-hidden="true" />
                     Añadir tomo
                 </Link>

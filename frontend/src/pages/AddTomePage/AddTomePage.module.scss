@@ -1,0 +1,248 @@
+.addTomePage {
+    min-height: 100vh;
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+.sidebar {
+    display: grid;
+    align-content: start;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface-aside);
+    box-shadow: var(--shadow-md);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.04);
+
+    svg {
+        width: 1.75rem;
+        height: 1.75rem;
+        color: var(--accent-yellow);
+    }
+
+    strong {
+        font-size: 1.5rem;
+        font-weight: 800;
+    }
+}
+
+/*Bloque usuario.*/
+.userBox {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-soft);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+/*Avatar de usuario.*/
+.userAvatar {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    border: 1px solid var(--border-soft);
+    background: linear-gradient(
+        135deg,
+        var(--gradient-left-1) 0%,
+        var(--gradient-left-2) 50%,
+        var(--gradient-left-3) 100%
+    );
+    color: var(--text-light);
+    font-weight: 800;
+    line-height: 1;
+    flex: 0 0 auto;
+}
+
+.userName {
+    margin: 0;
+    font-weight: 800;
+}
+
+.userEmail {
+    margin: 0;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+}
+
+/*Navegación lateral interna.*/
+.sidebarNav {
+    display: grid;
+    gap: 0.35rem;
+
+    a {
+        padding: 0.65rem 0.75rem;
+        border-radius: var(--radius);
+        color: var(--text-main);
+        text-decoration: none;
+        border: 1px solid transparent;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+    }
+}
+
+/*Enlace principal para añadir tomo.*/
+.addTomeLink {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-sm);
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-lg);
+    background: var(--primary-600);
+    color: var(--text-light);
+    text-decoration: none;
+    font-weight: 800;
+    box-shadow: var(--shadow-md);
+
+    svg {
+        width: 1.1rem;
+        height: 1.1rem;
+    }
+
+    &:hover {
+        background: var(--primary-700);
+    }
+}
+
+/*Contenido principal.*/
+.content {
+    display: grid;
+    align-content: start;
+    gap: var(--spacing-lg);
+    }
+
+.pageHeader {
+    display: grid;
+    gap: var(--spacing-sm);
+
+    h1 {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 2.75rem);
+        font-weight: 800;
+    }
+
+    p {
+        margin: 0;
+        color: var(--text-dim);
+    }
+}
+
+/*Tarjeta principal del form.*/
+.formCard {
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface-dark);
+    box-shadow: var(--shadow-md);
+}
+
+/*Form. */
+.tomeForm {
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+/*Grid principal de campos siempre visibles.*/
+.formGrid {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+/*Campo individual del form.*/
+.field {
+    display: grid;
+    gap: 0.4rem;
+
+    label {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        color: var(--text-dim);
+        font-size: 0.9rem;
+    }
+
+    input,
+    select,
+    textarea {
+        width: 100%;
+        padding: 0.75rem 0.875rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: rgba(2, 6, 23, 0.4);
+        color: var(--text-main);
+        outline: none;
+
+        &::placeholder {
+            color: var(--text-dim);
+        }
+
+        &:focus {
+            border-color: var(--primary-600);
+            box-shadow: 0 0 0 2px rgba(225, 29, 72, 0.35);
+        }
+    }
+
+    textarea {
+        min-height: 140px;
+        resize: vertical;
+    }
+}
+
+/*Campos exclusivos del estado "Leído".*/
+.readFields {
+    display: grid;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+/*Tablet: campos en dos columnas.*/
+@media (min-width: 700px) {
+    .formGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .readFields {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        .field:last-child {
+            grid-column: 1 / -1;
+        }
+    }
+}
+
+/*Escritorio: sidebar lateral y contenido a la derecha.*/
+@media (min-width: 1000px) {
+    .addTomePage {
+        grid-template-columns: 260px 1fr;
+        gap: var(--spacing-lg);
+    }
+
+    .sidebar {
+        position: sticky;
+        top: var(--spacing-lg);
+        height: calc(100vh - (var(--spacing-lg) * 2));
+        }
+
+    .formCard {
+        max-width: 900px;
+    }
+}

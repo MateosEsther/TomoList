@@ -1,7 +1,7 @@
-import { Link } from "react-router";
+import { Link } from 'react-router';
 import styles from './ForgotPasswordPage.module.scss'
-import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
-import AuthInput from "../../components/AuthInput/AuthInput";
+import PrimaryButton from '../../components/PrimaryButton/PrimaryButton';
+import AuthInput from '../../components/AuthInput/AuthInput';
 
 function ForgotPasswordPage() {
     return (
