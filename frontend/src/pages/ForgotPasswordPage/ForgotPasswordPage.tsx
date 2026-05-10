@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import styles from './ForgotPasswordPage.module.scss'
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
+import AuthInput from "../../components/AuthInput/AuthInput";
 
 function ForgotPasswordPage() {
     return (
@@ -19,11 +20,10 @@ function ForgotPasswordPage() {
                     <h2>¿Olvidaste la contraseña?</h2>
                     <p>Escribe el email asociado a tu cuenta para iniciar la recuperación.</p>
 
-                    {/*Form.*/}
                     <form className={styles.recoveryForm}>
-                        <label htmlFor="email">Email</label>
-                        <input
+                        <AuthInput
                             id="email"
+                            label="Email"
                             type="email"
                             placeholder="tu@email.com"
                         />

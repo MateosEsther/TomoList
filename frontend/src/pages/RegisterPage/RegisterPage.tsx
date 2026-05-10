@@ -1,6 +1,7 @@
 import styles from './RegisterPage.module.scss'
 import { Link } from 'react-router'
 import PrimaryButton from '../../components/PrimaryButton/PrimaryButton'
+import AuthInput from '../../components/AuthInput/AuthInput'
 
 function RegisterPage() {
     return (
@@ -26,39 +27,44 @@ function RegisterPage() {
 
                     {/*Formulario de registro*/}
                     <form className={styles.registerForm}>
-                        <label htmlFor="name">Nombre</label>
-                        <input
+                        <AuthInput
                             id="name"
+                            label="Nombre"
                             type="text"
                             placeholder="Tu nombre"
+                            size="compact" //porque tiene más campos y así se ve sin scrollear
                         />
 
-                        <label htmlFor="surname">Apellidos</label>
-                        <input
+                        <AuthInput
                             id="surname"
+                            label="Apellidos"
                             type="text"
                             placeholder="Tus apellidos"
+                            size="compact"
                         />
 
-                        <label htmlFor="email">Email</label>
-                        <input
+                        <AuthInput
                             id="email"
+                            label="Email"
                             type="email"
                             placeholder="tu@email.com"
+                            size="compact"
                         />
 
-                        <label htmlFor="password">Contraseña</label>
-                        <input
+                        <AuthInput
                             id="password"
+                            label="Constraseña"
                             type="password"
                             placeholder="********"
+                            size="compact"
                         />
 
-                        <label htmlFor="confirmPassword">Repite la contraseña</label>
-                        <input
+                        <AuthInput
                             id="confirmPassword"
+                            label="Repite la contraseña"
                             type="password"
                             placeholder="********"
+                            size="compact"
                         />
 
                         <PrimaryButton>Crear cuenta</PrimaryButton>

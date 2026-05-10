@@ -1,0 +1,36 @@
+/*Agrupa label + input para evitar repetir estructura y estilos en cada página.*/
+.field {
+    display: grid;
+    gap: 0.35rem;
+
+    label {
+        color: var(--text-dim);
+        font-size: 0.9rem;
+    }
+
+    input {
+        width: 100%;
+        padding: 0.75rem 0.875rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: rgba(2, 6, 23, 0.4);
+        color: var(--text-main);
+        outline: none;
+
+        &::placeholder {
+            color: var(--text-dim);
+        }
+
+        &:focus {
+            border-color: var(--primary-600);
+            box-shadow: 0 0 0 2px rgba(225, 29, 72, 0.35);
+        }
+    }
+}
+
+/*Variante compacta para formus con más campos, como RegisterPage.*/
+.compact {
+    input {
+        padding: 0.6rem 0.75rem;
+    }
+}

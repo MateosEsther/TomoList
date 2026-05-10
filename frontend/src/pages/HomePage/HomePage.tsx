@@ -11,6 +11,7 @@ import {
 import { Link } from 'react-router'
 // Componentes
 import PrimaryButton from '../../components/PrimaryButton/PrimaryButton'
+import AuthInput from '../../components/AuthInput/AuthInput'
 
 
 // Pantalla inicial de TomoList.
@@ -81,16 +82,15 @@ function HomePage() {
         
                 {/*Form*/}
                 <form className={styles.authForm}>
-                    <label htmlFor="email">Email</label>
-                    <input
+                    <AuthInput
                         id="email"
+                        label="Email"
                         type="email"
                         placeholder="tu@email.com"
                         />
-                    
-                    <label htmlFor="password">Contraseña</label>
-                    <input
+                    <AuthInput
                         id="password"
+                        label="Constraseña"
                         type="password"
                         placeholder="*******"
                     />
