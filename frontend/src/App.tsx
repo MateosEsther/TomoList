@@ -7,6 +7,7 @@ import RegisterPage from './pages/RegisterPage/RegisterPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage/ForgotPasswordPage'
 import MyListsPage from './pages/MyListsPage/MyListsPage'
 import AddTomePage from './pages/AddTomePage/AddTomePage'
+import ProfilePage from './pages/ProfilePage/ProfilePage'
 
 // App es el componente raíz de React. El return define las posibles rutas principales.
 
@@ -27,6 +28,10 @@ function App() {
 
             {/*Ruta añadir tomo.*/}
             <Route path="/anadir-tomo" element={<AddTomePage />} />
+
+            {/*Ruta perfil de usuario.*/}
+            <Route path="/perfil" element={<ProfilePage />} />
+
         </Routes>
     )
 }

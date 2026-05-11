@@ -2,6 +2,7 @@ import { Link } from 'react-router'
 import {
     BookOpen,
     Plus,
+    LogOut,
 } from 'lucide-react'
 import styles from './PrivateSidebar.module.scss'
 
@@ -14,7 +15,11 @@ function PrivateSidebar() {
             </div>
 
             {/*Bloque del usuario.*/}
-            <section className={styles.userBox}>
+            <Link 
+                className={styles.userBox}
+                to="/perfil"
+                aria-label="Ir a mi perfil"
+            >
                 <div className={styles.userAvatar} aria-hidden="true">
                     E
                 </div>
@@ -23,14 +28,14 @@ function PrivateSidebar() {
                     <p className={styles.userName}>Esther</p>
                     <p className={styles.userEmail}>usuario@tomolist.com</p>
                 </div>
-            </section>
+            </Link>
 
             {/*Navegación interna.*/}
             <nav className={styles.sidebarNav} aria-label="Navegación principal">
                 <Link to="/mis-listas">Mis listas</Link>
                 <Link to="/mis-listas">Pendientes</Link>
                 <Link to="/mis-listas">Leídas</Link>
-                <Link to="/mis-listas">Mi perfil</Link>
+                <Link to="/perfil">Mi perfil</Link>
             </nav>
 
             {/*Acción principal.*/}
@@ -38,6 +43,13 @@ function PrivateSidebar() {
                 <Plus aria-hidden="true" />
                 Añadir tomo
             </Link>
+
+            {/*Cierre de sesión.*/}
+            <button className={styles.logoutButton} type="button">
+                <LogOut aria-hidden="true" />
+                Cerrar sesión
+            </button>
+
         </aside>
     )
 }

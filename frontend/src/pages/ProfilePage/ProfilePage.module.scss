@@ -1,0 +1,236 @@
+.profilePage {
+    min-height: 100vh;
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+/*Contenido principal.*/
+.content {
+    display: grid;
+    align-content: start;
+    gap: var(--spacing-lg);
+}
+
+.pageHeader {
+    display: grid;
+    gap: var(--spacing-sm);
+
+    h1 {
+    margin: 0;
+        font-size: clamp(2rem, 5vw, 2.75rem);
+        font-weight: 800;
+    }
+
+    p {
+        margin: 0;
+        color: var(--text-dim);
+    }
+}
+
+.profileCard {
+    display: grid;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface-dark);
+    box-shadow: var(--shadow-md);
+}
+
+/*Bloque superior con avatar actual y datos básicos.*/
+.profileIntro {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+
+    h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 800;
+    }
+
+    p {
+        margin: 0;
+        color: var(--text-dim);
+    }
+}
+
+/*Avatar actual del usuario.*/
+.currentAvatar {
+    display: grid;
+    place-items: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    border: 1px solid var(--border-soft);
+    background: linear-gradient(
+        135deg,
+        var(--gradient-left-1) 0%,
+        var(--gradient-left-2) 50%,
+        var(--gradient-left-3) 100%
+    );
+    color: var(--text-light);
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1;
+    flex: 0 0 auto;
+}
+
+/*Sección de selección de avatar.*/
+.avatarSection {
+    display: grid;
+    gap: var(--spacing-sm);
+
+    h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 800;
+    }
+
+    p {
+        margin: 0;
+        color: var(--text-dim);
+        font-size: 0.95rem;
+    }
+}
+
+/*Opciones de avatar predefinidas.*/
+.avatarGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+/*Cada opción de avatar lleva un input nativo queda oculto visualmente, pero sigue siendo seleccionable.*/
+.avatarOption {
+    cursor: pointer;
+
+    input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    span {
+        display: grid;
+        place-items: center;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text-main);
+        font-weight: 800;
+        transition:
+            border-color 0.15s ease,
+            background 0.15s ease,
+            transform 0.06s ease;
+    }
+
+    input:checked + span {
+        border-color: var(--primary-600);
+        background: rgba(225, 29, 72, 0.18);
+        color: var(--text-light);
+    }
+
+    &:hover span {
+        transform: translateY(-1px);
+        border-color: var(--primary-600);
+    }
+}
+
+/*Form datos del usuario.*/
+.profileForm {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+.field {
+    display: grid;
+    gap: 0.4rem;
+
+    label {
+        color: var(--text-dim);
+        font-size: 0.9rem;
+    }
+
+    input {
+        width: 100%;
+        padding: 0.75rem 0.875rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: rgba(2, 6, 23, 0.4);
+        color: var(--text-main);
+        outline: none;
+
+        &:focus {
+            border-color: var(--primary-600);
+            box-shadow: 0 0 0 2px rgba(225, 29, 72, 0.35);
+        }
+    }
+}
+
+/*Tarjeta de seguridad.*/
+.securityCard {
+    display: grid;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface-dark);
+    box-shadow: var(--shadow-sm);
+
+    h2 {
+        margin: 0;
+        font-size: 1.4rem;
+        font-weight: 800;
+    }
+
+    p {
+        margin: 0;
+        color: var(--text-dim);
+    }
+}
+
+/*Botón secundario.*/
+.secondaryButton {
+    justify-self: start;
+    margin-top: var(--spacing-sm);
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: transparent;
+    color: var(--text-main);
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--primary-600);
+    }
+}
+
+/*Tablet: formulario en dos columnas.*/
+@media (min-width: 700px) {
+    .profileForm {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .profileForm > :last-child {
+        grid-column: 1 / -1;
+    }
+}
+
+/*Escritorio: sidebar lateral y contenido a la derecha.*/
+@media (min-width: 1000px) {
+    .profilePage {
+        grid-template-columns: 260px 1fr;
+        gap: var(--spacing-lg);
+    }
+
+    .profileCard,
+    .securityCard {
+        max-width: 900px;
+    }
+}
