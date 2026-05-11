@@ -8,6 +8,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage/ForgotPasswordPage'
 import MyListsPage from './pages/MyListsPage/MyListsPage'
 import AddTomePage from './pages/AddTomePage/AddTomePage'
 import ProfilePage from './pages/ProfilePage/ProfilePage'
+import ReadingListPage from './pages/ReadingListPage/ReadingListPage'
 
 // App es el componente raíz de React. El return define las posibles rutas principales.
 
@@ -31,6 +32,9 @@ function App() {
 
             {/*Ruta perfil de usuario.*/}
             <Route path="/perfil" element={<ProfilePage />} />
+
+            {/*Ruta dinámica para las listas según tipo y estado.*/}
+            <Route path="/listas/:type/:status" element={<ReadingListPage />} />
 
         </Routes>
     )

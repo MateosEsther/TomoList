@@ -3,8 +3,10 @@ import {
     Filter,
     CalendarDays,
 } from 'lucide-react'
+import { Link } from 'react-router'
 import styles from './MyListsPage.module.scss'
 import PrivateSidebar from '../../components/PrivateSidebar/PrivateSidebar'
+
 
 function MyListsPage() {
     return (
@@ -23,45 +25,53 @@ function MyListsPage() {
 
                 {/*Accesos visuales a las principales listas.*/}
                 <section className={styles.listsGrid}>
-                    <article className={styles.listCard}>
-                        <h2>Manga pendiente</h2>
+                    <Link 
+                        className={styles.listCard}
+                        to="/listas/manga/pendientes">
+                        <h2>Manga pendientes</h2>
                         <p>Lecturas de manga por empezar o continuar.</p>
 
                         <span className={styles.dateInfo}>
                             <CalendarDays aria-hidden="true" />
                             Última actualización pendiente
                         </span>
-                    </article>
+                    </Link>
 
-                    <article className={styles.listCard}>
-                        <h2>Literatura pendiente</h2>
+                    <Link 
+                        className={styles.listCard}
+                        to="/listas/literatura/pendientes">
+                        <h2>Literatura pendientes</h2>
                         <p>Libros guardados para leer más adelante.</p>
 
                         <span className={styles.dateInfo}>
                             <CalendarDays aria-hidden="true" />
                             Última actualización pendiente
                         </span>
-                    </article>
+                    </Link>
 
-                    <article className={styles.listCard}>
-                        <h2>Manga leído</h2>
+                    <Link 
+                        className={styles.listCard}
+                        to="/listas/manga/leidas">
+                        <h2>Manga leídas</h2>
                         <p>Mangas terminados, valoraciones y reseñas guardadas.</p>
 
                         <span className={styles.dateInfo}>
                             <CalendarDays aria-hidden="true" />
                             Información de lectura disponible en cada registro
                         </span>
-                    </article>
+                    </Link>
 
-                    <article className={styles.listCard}>
-                        <h2>Literatura leída</h2>
+                    <Link 
+                        className={styles.listCard}
+                        to="/listas/literatura/leidas">
+                        <h2>Literatura leídas</h2>
                         <p>Libros terminados con fecha, valoración y comentario.</p>
 
                         <span className={styles.dateInfo}>
                             <CalendarDays aria-hidden="true" />
                             Información de lectura disponible en cada registro
                         </span>
-                    </article>
+                    </Link>
                 </section>
 
                     {/*Zona búsqueda y filtros.*/}
