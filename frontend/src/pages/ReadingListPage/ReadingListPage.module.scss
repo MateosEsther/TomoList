@@ -27,27 +27,197 @@
     }
 }
 
-/*Estado vacío temporal. Más adelante será sustituido por cards reales de lecturas.*/
-.emptyState {
-    display: grid;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-lg);
+/*Barra para cambiar entre vista de tarjetas y vista de lista.*/
+.viewToolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     background: var(--surface-dark);
-    box-shadow: var(--shadow-md);
-    text-align: center;
+    box-shadow: var(--shadow-sm);
+
+    p {
+        margin: 0;
+        color: var(--text-dim);
+        font-weight: 700;
+    }
+
+    div {
+        display: flex;
+        gap: var(--spacing-sm);
+    }
+}
+
+/*Botón para elegir modo de vista.*/
+.viewButton {
+    padding: 0.55rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text-main);
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--primary-600);
+    }
+}
+
+/*Estado activo del modo de vista.*/
+.activeView {
+    background: var(--primary-600);
+    border-color: var(--primary-600);
+    color: var(--text-light);
+
+    &:hover {
+        background: var(--primary-700);
+        border-color: var(--primary-700);
+    }
+}
+
+/*Vista de tarjetas.*/
+.readingGrid {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+/* Vista de lista.*/
+.readingList {
+    display: grid;
+    gap: var(--spacing-sm);
+}
+
+/*Variante escueta de la vista lista.*/
+.readingList .readingCard {
+    padding: 0.9rem 1rem;
+}
+
+.readingList .readingInfo {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.readingList .readingInfo h2 {
+    font-size: 1rem;
+}
+
+.readingList .listDate {
+    margin: 0;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+}
+
+/*Card base por lectura.*/
+.readingCard {
+    display: grid;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface-dark);
+    box-shadow: var(--shadow-sm);
+}
+
+/*Caja visual para portada o placeholder.*/
+.coverBox {
+    display: grid;
+    place-items: center;
+    min-height: 220px;
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-dim);
+    overflow: hidden;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    span {
+        font-weight: 800;
+    }
+}
+
+/*Información textual para cada lectura.*/
+.readingInfo {
+    display: grid;
+    gap: var(--spacing-sm);
 
     h2 {
         margin: 0;
-        font-size: 1.5rem;
+        font-size: 1.25rem;
         font-weight: 800;
     }
+}
 
-    p {
-        max-width: 560px;
-        margin: 0 auto;
+.author {
+    margin: 0;
+    color: var(--accent-yellow);
+    font-weight: 700;
+}
+
+.listDate {
+    margin: 0;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+}
+
+.synopsis {
+    margin: 0;
+    color: var(--text-dim);
+}
+
+.metaInfo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+
+    span {
+        padding: 0.35rem 0.55rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
         color: var(--text-dim);
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+}
+
+.review {
+    margin: 0;
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid var(--border);
+    color: var(--text-main);
+    font-style: italic;
+}
+
+/*Tablet.*/
+@media (min-width: 700px) {
+    .readingGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .readingList .readingInfo {
+        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto;
+        align-items: center;
+        gap: var(--spacing-md);
+    }
+
+    .readingList .readingInfo h2,
+    .readingList .author,
+    .readingList .listDate {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .readingList .listDate {
+        justify-self: end;
     }
 }
 
@@ -57,8 +227,11 @@
         grid-template-columns: 260px 1fr;
         gap: var(--spacing-lg);
     }
+}
 
-    .emptyState {
-        max-width: 900px;
+/*Escritorio amplio.*/
+@media (min-width: 1100px) {
+    .readingGrid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
