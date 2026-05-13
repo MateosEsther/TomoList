@@ -255,3 +255,223 @@ flowchart TD
     L --> M[Guardar cambios]
     M --> N[Tome pasa a lista de pendientes]
 ```
+---
+
+## 6.Entidad User
+
+La entidad `User` representa a cada usuario registrado en TomoList. 
+Cada usuario podrá iniciar sesión, gestionar su perfil, elegir un avatar predefinido y guadar sus propias lecturas.
+
+## 6.1.Modelo provisional de User
+```ts
+type User = {
+    id: number
+
+    name: string
+    email: string
+    passwordHash: string
+
+    avatarId: string
+
+    createdAt: string
+    updatedAt: string
+}
+```
+## 6.2.Origen de los datos
+
+### DATOS INTRODUCIDOS POR EL USUARIO
+```txt
+name
+email
+password
+avatarId
+```
+Nombre, email y contraseña se introducen durante el registro. 
+El avatar se podrá modificar desde la pantalla perfil una vez iniciada sesión.
+
+### DATOS GENERADOS POR EL SISTEMA
+```txt
+id
+passwordHash
+createdAt
+updatedAt
+```
+El sistema generará automáticamente estos datos y transformará la constraseña en `passwordHash`.
+
+## 6.3.Reglas de negocio de User
+
+### Regla 1: el email debe ser único
+No pueden existir dos usuarios registrados con el mismo email.
+
+### Regla 2: la contraseña se guarda hasheada
+Las contraseñas no se pueden guardar directamente en texto plano por seguridad.
+Se transforman en un hash seguro antes de guardarse.
+
+### Regla 3: un usuario puede tener muchas lecturas
+Un usuario puede guardar muchas lecturas. 
+Relación lógica:
+```txt
+User 1 ---- N Tome
+```
+
+### Regla 4: avatar guardado en avatarId
+El usuario podrá elegir un avatar entre los disponibles predefinidos.
+La base de datos guardará solo el identificador del avatar.
+
+---
+
+## 7. Avatares predefinidos
+
+TomoList usará avatares predefinidos que vivirán en el frontend y sus imágenes estarán una carpeta
+públoca del proyecto. Estructura orientativa:
+```txt
+public/
+└── avatars/
+    ├── avatar-01.png
+    ├── avatar-02.png
+    ├── avatar-03.png
+    └── avatar-04.png
+```
+En BD solo se guardará el identificador `avatarId` y con ello mostrará la imagen correspondiente.
+
+---
+
+## 8.Autenticación y sesión
+
+TomoList tendrá un sistema de autenticación para permitir que cada usuario acceda únicamente a sus propias lecturas.
+La sesión se gestionará desde el backend mediante una cookie segura.
+El frontend no guardará tokens sensibles en `localStorage`.
+
+## 8.1.Modelo provisional de sesión
+```ts
+type Session = {
+    id: number
+    userId: number
+
+    sessionTokenHash: string
+
+    createdAt: string
+    expiresAt: string
+    revokedAt?: string
+}
+```
+
+## 8.2.Origen de los datos
+
+### DATOS GENERADOS POR EL SISTEMA
+```txt
+id
+userId
+sessionTokenHash
+createdAt
+expiresAt
+revokedAt
+```
+
+El sistema genera la sesión cuando el usuario inicia sesión correctamente.
+El campo `sessionTokenHash` representa la versión hasheada del identificador seguro de la sesión.
+La cookie será enviada por el backend al navegador y deberá configurarse como segura.
+
+## 8.3.Reglas de negocio de sesión
+
+### Regla 1: una sesión pertenece a un usuario
+Cada sesión pertenece a un único usuario.
+Un usuario puede tener varias sesiones activas si inicia sesión desde distintos dispositivos o navegadores.
+
+### Regla 2: el frontend no almacena tokens sensibles
+El frontend no debe guardar tokens de sesión en `localStorage`.
+La sesión se gestionará mediante cookie segura configurada desde backend.
+
+### Regla 3: una sesión debe poder expirar
+Toda sesión debe tener una fecha de expiración.
+Restricción lógica:
+```txt
+expiresAt != null
+```
+Una sesión solo será válida si no ha expirado y no ha sido revocada.
+Condición de sesión válida:
+```txt
+expiresAt > fecha actual
+revokedAt = null
+```
+
+### Regla 4: cerrar sesión invalida la sesión
+Al cerrar sesión, la sesión debe quedar invalidada.
+Restricción lógica:
+```txt
+revokedAt != null
+```
+Una sesión revocada no debe permitir acceder a rutas privadas.
+
+---
+
+## 9.Recuperación de contraseña
+
+TomoList tendrá un flujo de recuperación de contraseña para usuarios que no recuerden su clave de acceso.
+Este flujo se inicia desde la pantalla `ForgotPasswordPage`.
+
+## 9.1.Modelo provisional de PasswordResetToken
+```ts
+type PasswordResetToken = {
+    id: number
+    userId: number
+
+    tokenHash: string
+
+    createdAt: string
+    expiresAt: string
+    usedAt?: string
+}
+```
+
+## 9.2.Origen de los datos
+
+### DATOS GENERADOS POR EL SISTEMA
+```txt
+id
+userId
+tokenHash
+createdAt
+expiresAt
+usedAt
+```
+
+El sistema genera un token temporal cuando el usuario solicita recuperar su contraseña y guarda su versión hasheada.
+Ese token se usará para permitir crear una nueva contraseña dentro de un tiempo limitado.
+
+## 9.3.Reglas de negocio de recuperación de contraseña
+
+### Regla 1: el token pertenece a un usuario
+Cada token de recuperación pertenece a un único usuario.
+
+### Regla 2: el token debe expirar
+El token de recuperación debe tener una fecha de expiración.
+Restricción lógica:
+
+```txt
+expiresAt != null
+```
+
+### Regla 3: el token solo puede usarse una vez
+Para poder usarse, el token debe cumplir:
+```txt
+expiresAt > fecha actual
+usedAt = null
+```
+Después de usarse, debe quedar marcado como utilizado.
+Restricción lógica:
+```txt
+usedAt != null
+```
+
+### Regla 4: una contraseña nueva sustituye a la anterior
+Cuando el usuario crea una nueva contraseña, el sistema debe generar un nuevo `passwordHash`.
+La contraseña anterior deja de ser válida.
+
+### Regla 5: el token no debe revelar si un email existe
+Cuando un usuario solicita recuperación de contraseña, la respuesta de la aplicación no debe revelar si el email está registrado o no.
+Mensaje orientativo:
+```txt
+Si el email existe en TomoList, recibirás instrucciones para recuperar tu contraseña.
+```
+---
