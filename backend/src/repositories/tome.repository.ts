@@ -1,18 +1,6 @@
 //Provisional, mientras no hay BD, para representar las lecturas guardadas en TomoList,
 //con BD, su función será comunicarse con ésta mediante prisma solicitando la petición del service.
-type Tome ={
-    id:number
-    title: string
-    author: string
-    type: 'manga' | 'literature'
-    status: 'pending' | 'read'
-    converUrl?: string
-    synopsis?: string
-    readMonth?: string
-    rating?: number
-    review?: string
-}
-
+import type { Tome } from '../types/tome.types.js'
 //Datos para simular y comprobar mientras se va construyendo la web.
 const sampleTomes: Tome[] = [
     {
