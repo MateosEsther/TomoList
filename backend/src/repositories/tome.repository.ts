@@ -28,3 +28,8 @@ const sampleTomes: Tome[] = [
 export function findAllTomes() {
     return sampleTomes
 }
+
+//Función para buscar lectura por id.
+export function findTomeById(id: number) {
+    return sampleTomes.find((tome) => tome.id === id)
+}
