@@ -1,16 +1,13 @@
-import express, { Request, Response } from 'express'
+import express from 'express'
+
+import healthRouter from './routes/health.routes.js'
 
 const app = express()
 
-//Permite a Express leer el JSON enviado en las peticiones.
+//Permite que Express pueda leer JSON enviado en las peticiones.
 app.use(express.json())
 
-//Ruta de prueba para comprobar que el backend está funcionando.
-app.get('/api/health', (_req: Request, res: Response) => {
-    res.status(200).json({
-        status: 'ok',
-        service: 'tomolist-backend',
-    })
-})
+//Rutas de comprobación del estado del backend.
+app.use('/api', healthRouter)
 
 export default app
