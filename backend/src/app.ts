@@ -1,6 +1,7 @@
 import express from 'express'
 
 import healthRouter from './routes/health.routes.js'
+import tomeRouter from './routes/tome.routes.js'
 
 const app = express()
 
@@ -9,5 +10,8 @@ app.use(express.json())
 
 //Rutas de comprobación del estado del backend.
 app.use('/api', healthRouter)
+
+//Rutas de Tome.
+app.use('/api/tomes', tomeRouter)
 
 export default app
