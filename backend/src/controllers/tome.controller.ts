@@ -1,5 +1,7 @@
 import { Request, Response } from 'express'
 
+import { createTomeSchema } from '../schemas/tome.schema.js'
+
 import {
     createNewTome,
     getAllTomes,
@@ -43,6 +45,20 @@ export function getTomeById(req: Request, res: Response) {
 
 //Responde a la petición HTTP para crear una nueva lectura.
 export function createTome(req: Request, res: Response) {
+
+    //Validación del body recibido antes de enviarlo al service.
+    //safeParse devuelve true si está correcto o false si no, no rompe la app.
+    const validationResult = createTomeSchema.safeParse(req.body)
+    //Si falla, error 404
+    if (!validationResult.success) {
+        const firstError = validationResult.error.issues[0]
+
+        res.status(400).json({
+            message: firstError?.message ?? 'Los datos enviados son inválidos.',
+        }) 
+        return
+    }
+    
     try {
         //La petición contiene los datos enviados por el cliente desde req.body y llama al service createNewTome.
         const newTome = createNewTome(req.body)
