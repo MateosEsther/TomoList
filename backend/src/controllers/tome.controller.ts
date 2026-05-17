@@ -69,8 +69,8 @@ export function createTome(req: Request, res: Response) {
     }
 
     try {
-        //La petición contiene los datos enviados por el cliente desde req.body y llama al service createNewTome.
-        const newTome = createNewTome(req.body)
+        //La petición contiene los datos enviados por el cliente pero ya están validados.
+        const newTome = createNewTome(validationResult.data)
 
         //Si va bien, responde 201 y se crea un nuevo recurso.
         res.status(201).json({
@@ -79,7 +79,9 @@ export function createTome(req: Request, res: Response) {
     } catch (error) {
         //Si el service detecta que hay un error de regla de negocio, responde error 400 por datos inválidos.
         res.status(400).json({
-            message: error instanceof Error ? error.message: 'Los datos enviados no son válidos.',
+            message: error instanceof Error
+            ? error.message
+            : 'Los datos enviados no son válidos.',
         })
     }
 }

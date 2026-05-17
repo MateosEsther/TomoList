@@ -1,5 +1,13 @@
 import { z } from 'zod'
 
+//Convierte strings vacíos en undefined para que los campos opcionales pueda llegar vacíos desde un form.
+function emptyStringToUndefined(value: unknown) {
+    if (typeof value === 'string' && value.trim() === '') {
+        return undefined
+    }
+    return value
+}
+
 //Schema de validación para crear un Tome, comprueba los datos enviados por el cliente.
 export const createTomeSchema = z.object({
     //Título debe ser texto pero puede contener números pero no puede ser un number o estar vacío.
@@ -16,14 +24,18 @@ export const createTomeSchema = z.object({
         error: 'El estado de lectura debe ser pendiente o leída.'
     }),
 
-    //readMonth es opcional. Su formato es YYYY-MM.
-    readMonth: z
-        .string()
-        .regex(
-            /^\d{4}-(0[1-9]1[0-2])$/,
-            'El mes de lectura debe tener formato YYYY-MM.'
-        )
-        .optional(),
+    //readMonth es opcional: vacío = undefined, completo = formato interno YYYY-MM.
+    readMonth: z.preprocess(
+        emptyStringToUndefined,
+        z
+            .string()
+            .trim()
+            .regex(
+                /^\d{4}-(0[1-9]|1[0-2])$/,
+                'El mes de lectura debe tener formato YYYY-MM.'
+            )
+            .optional()
+    ),
 
     //Valoraación es opcional a nivel de campo, pero obligatoria si estatus=read.
     rating: z
@@ -34,7 +46,10 @@ export const createTomeSchema = z.object({
         .optional(),
 
     //Reseña es opcional.
-    review: z.string().trim().optional(),
+    review: z.preprocess(
+        emptyStringToUndefined,
+        z.string().trim().optional()
+    ),
 
 }).superRefine((data, ctx) => {
     //Regla de negocio: status = leída, lectura debe tener valoración.
