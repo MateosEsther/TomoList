@@ -4,6 +4,10 @@ import type {
     CreateTomeDto,
     Tome,
 } from '../types/tome.types.js'
+
+import { normalizeText } from '../utils/normalizeText.js'
+
+
 //Datos para simular y comprobar mientras se va construyendo la web.
 const sampleTomes: Tome[] = [
     {
@@ -35,6 +39,23 @@ export function findAllTomes() {
 //Función para buscar lectura por id.
 export function findTomeById(id: number) {
     return sampleTomes.find((tome) => tome.id === id)
+}
+
+//Busca si existe la lectura con el mismo título, autor y tipo.
+export function findTomeDuplicate(data: CreateTomeDto) {
+    const titleNormalized = normalizeText(data.title)
+    const authorNormalized = normalizeText(data.author)
+
+    return sampleTomes.find((tome) => {
+        const existingTitleNormalized = normalizeText(tome.title)
+        const existingAuthorNormalized = normalizeText(tome.author)
+
+        return (
+            existingTitleNormalized === titleNormalized &&
+            existingAuthorNormalized === authorNormalized &&
+            tome.type === data.type
+        )
+    })
 }
 
 //Función para crear una nueva lectura
