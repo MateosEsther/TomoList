@@ -1,6 +1,9 @@
 //Provisional, mientras no hay BD, para representar las lecturas guardadas en TomoList,
 //con BD, su función será comunicarse con ésta mediante prisma solicitando la petición del service.
-import type { Tome } from '../types/tome.types.js'
+import type { 
+    CreateTomeDto,
+    Tome,
+} from '../types/tome.types.js'
 //Datos para simular y comprobar mientras se va construyendo la web.
 const sampleTomes: Tome[] = [
     {
@@ -32,4 +35,19 @@ export function findAllTomes() {
 //Función para buscar lectura por id.
 export function findTomeById(id: number) {
     return sampleTomes.find((tome) => tome.id === id)
+}
+
+//Función para crear una nueva lectura
+export function createTome(data: CreateTomeDto) {
+    //Genera id temporal a partir del último existente.
+    const newId = sampleTomes.length + 1
+
+    const newTome: Tome = {
+        id: newId,
+        ...data,
+    }
+
+    sampleTomes.push(newTome)
+
+    return newTome
 }

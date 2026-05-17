@@ -13,3 +13,14 @@ export type Tome = {
     rating?: number
     review?: string
 }
+
+//Tipo proviosional para añadir una lectura.
+export type CreateTomeDto = {
+    title: string
+    author: string
+    type: 'manga' | 'literature'
+    status: 'pending' | 'read'
+    readMonth?: string
+    rating?: number
+    review?: string
+}

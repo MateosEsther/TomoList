@@ -1,6 +1,7 @@
 import { Router } from 'express'
 
-import { 
+import {
+    createTome,
     getTomeById,
     getTomes,
 } from '../controllers/tome.controller.js'
@@ -8,10 +9,13 @@ import {
 //Router específico del módulo Tome. Agrupa las rutas relacionadas con las lecturas guardadas.
 const tomeRouter = Router()
 
-// GET /api/tomes
+// GET /api/tomes -> devuelve todas las lecturas.
 tomeRouter.get('/', getTomes)
 
-// GET /api/tomes/:id
+// Post /api/tomes -> crea una nueva lectura.
+tomeRouter.post('/', createTome)
+
+// GET /api/tomes/:id -> devuelve una lectura concreta según el id recibido por la URL.
 tomeRouter.get('/:id', getTomeById)
 
 export default tomeRouter

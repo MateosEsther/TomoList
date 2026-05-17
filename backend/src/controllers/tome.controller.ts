@@ -1,9 +1,11 @@
 import { Request, Response } from 'express'
 
 import {
+    createNewTome,
     getAllTomes,
     getTomeById as getTomeByIdService,
 } from '../services/tome.service.js'
+
 
 //Responde a la petición HTTP para obtener lecturas. No contiene los datos directamente: pide la información al service.
 export function getTomes(_req: Request, res: Response) {
@@ -37,4 +39,22 @@ export function getTomeById(req: Request, res: Response) {
     res.status(200).json({
         data: tome,
     })
+}
+
+//Responde a la petición HTTP para crear una nueva lectura.
+export function createTome(req: Request, res: Response) {
+    try {
+        //La petición contiene los datos enviados por el cliente desde req.body y llama al service createNewTome.
+        const newTome = createNewTome(req.body)
+
+        //Si va bien, responde 201 y se crea un nuevo recurso.
+        res.status(201).json({
+            data: newTome
+        })
+    } catch (error) {
+        //Si el service detecta que hay un error de regla de negocio, responde error 400 por datos inválidos.
+        res.status(400).json({
+            message: error instanceof Error ? error.message: 'Los datos enviados no son válidos.',
+        })
+    }
 }
