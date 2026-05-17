@@ -25,19 +25,28 @@ export function getTomeById(req: Request, res: Response) {
     //Los parámetros de ruta llegan como string. Hay que convertir el id recibido por URL en number para poderlo buscar.
     const tomeId = Number(req.params.id)
 
+    //Si el id no es un entero positivo, error 400. Para diferenciar un mal id de una lectura inexistente.
+    if (!Number.isInteger(tomeId) || tomeId <= 0) {
+        res.status(400).json({
+            message: 'El id de la lectura debe ser un número válido.',
+        })
+        
+        return
+    }
+
     //Pide al service que busque el Tome correspondiente.
     const tome = getTomeByIdService(tomeId)
 
     //Si no existe => 404
     if (!tome) {
         res.status(404).json({
-            message: 'Tome not found',
+            message: 'Lectura no encontrada.',
         })
 
         return
     }
 
-    //Si existe => 200 e info.
+    //Si existe => 200 + info de lectura.
     res.status(200).json({
         data: tome,
     })
@@ -58,7 +67,7 @@ export function createTome(req: Request, res: Response) {
         }) 
         return
     }
-    
+
     try {
         //La petición contiene los datos enviados por el cliente desde req.body y llama al service createNewTome.
         const newTome = createNewTome(req.body)
