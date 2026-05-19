@@ -7,6 +7,8 @@ dist/
 # Environment variables (contenido sensible)
 .env
 .env.*
+!.env.example
+!frontend/.env.example
 
 # Java/Spring Boot build (se genera al compilar con Sptring Boot)
 target/
