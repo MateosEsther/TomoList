@@ -1,9 +1,72 @@
-import styles from './RegisterPage.module.scss'
+//useState para guardar mensajes de error/success
+import { useState } from 'react'
+//FormEvent tipa el evento del form
+import type { FormEventHandler } from 'react'
 import { Link } from 'react-router'
-import PrimaryButton from '../../components/PrimaryButton/PrimaryButton'
+
 import AuthInput from '../../components/AuthInput/AuthInput'
+import PrimaryButton from '../../components/PrimaryButton/PrimaryButton'
+import { supabase } from '../../lib/supabaseClient'
+import styles from './RegisterPage.module.scss'
+
 
 function RegisterPage() {
+    
+    const [errorMessage, setErrorMessage] = useState('')
+    const [successMessage, setSuccessMessage] = useState('')
+
+    const handleRegister: FormEventHandler<HTMLFormElement> = async (event) => {
+        //Evita que el navegador recargue la página al enviar el form.
+        event.preventDefault()
+
+        //Guarda una referencia al form para limpiarlo después.
+        const form = event.currentTarget
+
+        //Limpia mensajes anteriores previa validación o envío de datos.
+        setErrorMessage('')
+        setSuccessMessage('')
+
+        const formData = new FormData(form)
+
+        const name = String(formData.get('name') ?? '').trim()
+        const surname = String(formData.get('surname') ?? '').trim()
+        const email = String(formData.get('email') ?? '').trim()
+        const password = String(formData.get('password') ?? '').trim()
+        const confirmPassword = String(formData.get('confirmPassword') ?? '').trim()
+
+        if (!name || !surname || !email || !password || !confirmPassword) {
+            setErrorMessage('Todos los campos son obligatorios.')
+            return
+        }
+
+        if (password !== confirmPassword) {
+            setErrorMessage('Las contraseñas no coinciden.')
+            return
+        }
+
+        const { error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+                data: {
+                    name,
+                    surname,
+                },
+            },
+        })
+
+        //En caso de error en el registro.
+        if (error) {
+            setErrorMessage(error.message)
+            return
+        }
+        
+        //Resetea valores del form con la cuenta creada correctamente.
+        form.reset()
+        setSuccessMessage('Cuenta creada correctamente.')
+    }
+
+
     return (
         <main className={styles.registerPage}>
             {/*Sección izquierda. Presentación.*/}
@@ -26,7 +89,7 @@ function RegisterPage() {
                     </p>
 
                     {/*Formulario de registro*/}
-                    <form className={styles.registerForm}>
+                    <form className={styles.registerForm} onSubmit={handleRegister}>
                         <AuthInput
                             id="name"
                             label="Nombre"
@@ -53,7 +116,7 @@ function RegisterPage() {
 
                         <AuthInput
                             id="password"
-                            label="Constraseña"
+                            label="Contraseña"
                             type="password"
                             placeholder="********"
                             size="compact"
@@ -67,7 +130,9 @@ function RegisterPage() {
                             size="compact"
                         />
 
-                        <PrimaryButton>Crear cuenta</PrimaryButton>
+                        <PrimaryButton type="submit">Crear cuenta</PrimaryButton>
+                        {errorMessage && <p>{errorMessage}</p>}
+                        {successMessage && <p>{successMessage}</p>}
                     </form>
                     <p className={styles.loginLinkText}>
                         ¿Ya tienes cuenta? <Link to='/'>Inicia sesión</Link>

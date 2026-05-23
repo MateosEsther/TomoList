@@ -29,6 +29,7 @@ function AuthInput({
 
             <input
                 id={id}
+                name={id}
                 type={type}
                 placeholder={placeholder}
             />
