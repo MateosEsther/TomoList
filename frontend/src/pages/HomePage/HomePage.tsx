@@ -1,5 +1,11 @@
+//useState para mostrar mensajes de error en pantalla.
+//FormEventHandler para tipar la función que gestiona el envío del form.
+import { useState } from 'react'
+import type { FormEventHandler } from 'react'
+
 // Importa los estilos como CSSModule, evita que las clases sean globales y afecten a otras partes de la app.
 import styles from './HomePage.module.scss'
+
 // Importa iconos.
 import {
     LibraryBig,
@@ -7,15 +13,62 @@ import {
     Star,
     MessageSquareText,
 } from 'lucide-react'
-// Enrutamiento. Enlaces internos sin recargar.
-import { Link } from 'react-router'
-// Componentes
+
+//Enrutamiento, enlaces internos sin recargar y useNavigate para redirigir al usuario después de iniciar sesión
+import { Link, useNavigate } from 'react-router'
+
+//Componentes.
 import PrimaryButton from '../../components/PrimaryButton/PrimaryButton'
 import AuthInput from '../../components/AuthInput/AuthInput'
 
+//Cliente de supabase para usar autenticación.
+import { supabase } from '../../lib/supabaseClient'
 
 // Pantalla inicial de TomoList.
 function HomePage() {
+
+    //Redirige al usuario con el login.
+    const navigate = useNavigate()
+
+    //Guarda el mensaje de error si el inicio de sesión falla.
+    const [errorMessage, setErrorMessage] = useState('')
+
+    //Función que se activa al hacer el login correcto.
+    const handleLogin: FormEventHandler<HTMLFormElement> = async (event) => {
+        //Evita que el browser recargue la página al enviar el form.
+        event.preventDefault()
+
+        //Limpia errores anteriores previa validación o envío de datos.
+        setErrorMessage('')
+
+        //Recoge datos del form usando los atributos de los inputs.
+        const formData = new FormData(event.currentTarget)
+
+        //Convierte los datos recogidos a string y limpia espacios.
+        const email = String(formData.get('email') ?? '').trim()
+        const password = String(formData.get('password') ?? '')
+
+        //Validación antes de llamar a Supabase
+        if (!email || !password) {
+            setErrorMessage('Email y contraseña obligatorios.')
+            return
+        }
+        
+        //Inicio de sesión con Supabase Auth con los datos del form
+        const { error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        })
+        //Si Supabase devuelve error
+        if (error) {
+            setErrorMessage('Email o contraseña incorrectos.')
+            return
+        }
+
+        //Si el login es exitoso, redirección a listas 
+        navigate('/mis-listas')
+    }
+
     // Estructura principal.
     return (
         <main className={styles.homePage}>
@@ -81,7 +134,7 @@ function HomePage() {
                 <p>Inicia sesión para consultar y actualizar tus listas.</p>
         
                 {/*Form*/}
-                <form className={styles.authForm}>
+                <form className={styles.authForm} onSubmit={handleLogin}>
                     <AuthInput
                         id="email"
                         label="Email"
@@ -90,16 +143,19 @@ function HomePage() {
                         />
                     <AuthInput
                         id="password"
-                        label="Constraseña"
+                        label="Contraseña"
                         type="password"
                         placeholder="*******"
                     />
 
                     <Link className={styles.forgotPasswordLink} to="/forgot-password">
-                        ¿Has olvidado tu constraseña?
+                        ¿Has olvidado tu contraseña?
                     </Link>
 
-                    <PrimaryButton>Iniciar sesión</PrimaryButton>
+                    <PrimaryButton type="submit">Iniciar sesión</PrimaryButton>
+                    {/*Mensaje de eror de inicio de sesión.*/}
+                    {errorMessage && <p>{errorMessage}</p>}
+
                 </form>
 
                 <p className={styles.authLinkText}>
