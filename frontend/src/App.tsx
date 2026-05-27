@@ -10,6 +10,9 @@ import AddTomePage from './pages/AddTomePage/AddTomePage'
 import ProfilePage from './pages/ProfilePage/ProfilePage'
 import ReadingListPage from './pages/ReadingListPage/ReadingListPage'
 
+//Componente protector de rutas privadas.
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
+
 // App es el componente raíz de React. El return define las posibles rutas principales.
 
 function App() {
@@ -25,16 +28,44 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
             {/*Ruta a mis listas.*/}
-            <Route path="/mis-listas" element={<MyListsPage />} />
+            <Route 
+                path="/mis-listas" 
+                element={
+                    <ProtectedRoute>
+                        <MyListsPage />  
+                    </ProtectedRoute>
+                }
+            />
 
             {/*Ruta añadir tomo.*/}
-            <Route path="/anadir-tomo" element={<AddTomePage />} />
+            <Route 
+                path="/anadir-tomo" 
+                element={
+                    <ProtectedRoute>
+                        <AddTomePage />  
+                    </ProtectedRoute>
+                }
+            />
 
             {/*Ruta perfil de usuario.*/}
-            <Route path="/perfil" element={<ProfilePage />} />
-
+            <Route 
+                path="/perfil" 
+                element={
+                    <ProtectedRoute>
+                        <ProfilePage />  
+                    </ProtectedRoute>
+                }
+            />        
+            
             {/*Ruta dinámica para las listas según tipo y estado.*/}
-            <Route path="/listas/:type/:status" element={<ReadingListPage />} />
+            <Route 
+                path="/listas/:type/:status" 
+                element={
+                    <ProtectedRoute>
+                        <ReadingListPage />  
+                    </ProtectedRoute>
+                }
+            />
 
         </Routes>
     )
