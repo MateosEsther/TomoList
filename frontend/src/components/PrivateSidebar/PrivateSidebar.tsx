@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import {
     BookOpen,
@@ -7,9 +8,72 @@ import {
 import styles from './PrivateSidebar.module.scss'
 import { supabase } from '../../lib/supabaseClient'
 
+//Datos de sidebar.
+type SidebarProfile = {
+    name: string
+    avatar_id: string
+}
+
 function PrivateSidebar() {
     //Redirección
     const navigate = useNavigate()
+    //Guarda los datos mínimos para el perfil de usuario.
+    const [profile, setProfile] = useState<SidebarProfile | null>(null)
+
+    //Carga el perfil autenticado al mostrar el sidebar.
+    useEffect(() => {
+        let isMounted = true
+
+        async function loadSidebarProfile() {
+            //Obteniene el usuario autenticado desde Supabase Auth.
+            const { data: userData, error: userError } = await supabase.auth.getUser()
+
+            //Si el componente no está en pantalla, no actualiza.
+            if (!isMounted) {
+                return
+            }
+            
+            //Si no hay usuario, no carga perfil. 
+            if (userError || !userData.user) {
+                return
+            }
+
+            //Busca el perfil asociado al usuario autenticado.
+            const { data: profileData, error: profileError } = await supabase
+                .from('profiles')
+                .select('name, avatar_id')
+                .eq('id', userData.user.id)
+                .single()
+
+            //Si el componente ya no está en pantalla, no actualiza estado.
+            if (!isMounted) {
+                return
+            }
+
+            //Si falla la consulta, no rompe el sidebar.
+            if (profileError) {
+                return
+            }
+
+            //Guarda el perfil real.
+            setProfile(profileData)
+        }
+
+        loadSidebarProfile()
+
+        //Limpia al desmontar el componente.
+        return () => {
+            isMounted = false
+        }
+    }, [])
+
+    //Nombre visible del user en el sidebar.
+    const userName = profile?.name || 'Usuari@'
+
+    //Avatar.
+    const avatarLetter = profile?.name
+        ? profile?.name.charAt(0).toUpperCase()
+        : 'U'
 
     //Cierra la sesión en supabase.
     async function handleLogout() {
@@ -40,12 +104,11 @@ function PrivateSidebar() {
                 aria-label="Ir a mi perfil"
             >
                 <div className={styles.userAvatar} aria-hidden="true">
-                    E
+                    {avatarLetter}
                 </div>
 
                 <div>
-                    <p className={styles.userName}>Esther</p>
-                    <p className={styles.userEmail}>usuario@tomolist.com</p>
+                    <p className={styles.userName}>{userName}</p>
                 </div>
             </Link>
 
