@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import styles from './PrivateSidebar.module.scss'
 import { supabase } from '../../lib/supabaseClient'
+import { getAvatarUrl } from '../../utils/avatar'
 
 //Datos de sidebar.
 type SidebarProfile = {
@@ -71,9 +72,9 @@ function PrivateSidebar() {
     const userName = profile?.display_name || 'Usuari@'
 
     //Avatar.
-    const avatarLetter = profile?.display_name
-        ? profile?.display_name.charAt(0).toUpperCase()
-        : 'U'
+    const avatarUrl = profile?.avatar_id
+        ? getAvatarUrl(profile?.avatar_id)
+        : getAvatarUrl('avatar-01')
 
     //Cierra la sesión en supabase.
     async function handleLogout() {
@@ -104,7 +105,7 @@ function PrivateSidebar() {
                 aria-label="Ir a mi perfil"
             >
                 <div className={styles.userAvatar} aria-hidden="true">
-                    {avatarLetter}
+                    <img src={avatarUrl} alt="" />
                 </div>
 
                 <div>

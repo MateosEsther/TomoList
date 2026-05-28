@@ -74,6 +74,15 @@
     font-weight: 800;
     line-height: 1;
     flex: 0 0 auto;
+
+    overflow: hidden;
+}
+
+.userAvatar img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
 }
 
 .userName {
