@@ -1,12 +1,31 @@
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import {
     BookOpen,
     Plus,
     LogOut,
 } from 'lucide-react'
 import styles from './PrivateSidebar.module.scss'
+import { supabase } from '../../lib/supabaseClient'
 
 function PrivateSidebar() {
+    //Redirección
+    const navigate = useNavigate()
+
+    //Cierra la sesión en supabase.
+    async function handleLogout() {
+        //Supabase elimna la sesión activa del navegador.
+        const { error } = await supabase.auth.signOut()
+
+        //Con error.
+        if (error) {
+            console.error('Error al cerrar sesión:', error.message)
+            return
+        }
+
+        //Tras cerrar sesión, redirige a vista pública login.
+        navigate('/')
+    }
+
     return (
         <aside className={styles.sidebar}>
             <div className={styles.brand}>
@@ -45,7 +64,11 @@ function PrivateSidebar() {
             </Link>
 
             {/*Cierre de sesión.*/}
-            <button className={styles.logoutButton} type="button">
+            <button 
+                className={styles.logoutButton} 
+                type="button"
+                onClick={handleLogout}
+            >
                 <LogOut aria-hidden="true" />
                 Cerrar sesión
             </button>
