@@ -10,7 +10,7 @@ import { supabase } from '../../lib/supabaseClient'
 
 //Datos de sidebar.
 type SidebarProfile = {
-    name: string
+    display_name: string
     avatar_id: string
 }
 
@@ -41,7 +41,7 @@ function PrivateSidebar() {
             //Busca el perfil asociado al usuario autenticado.
             const { data: profileData, error: profileError } = await supabase
                 .from('profiles')
-                .select('name, avatar_id')
+                .select('display_name, avatar_id')
                 .eq('id', userData.user.id)
                 .single()
 
@@ -68,11 +68,11 @@ function PrivateSidebar() {
     }, [])
 
     //Nombre visible del user en el sidebar.
-    const userName = profile?.name || 'Usuari@'
+    const userName = profile?.display_name || 'Usuari@'
 
     //Avatar.
-    const avatarLetter = profile?.name
-        ? profile?.name.charAt(0).toUpperCase()
+    const avatarLetter = profile?.display_name
+        ? profile?.display_name.charAt(0).toUpperCase()
         : 'U'
 
     //Cierra la sesión en supabase.
