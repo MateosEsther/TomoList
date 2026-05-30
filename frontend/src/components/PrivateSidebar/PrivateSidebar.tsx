@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import {
     BookOpen,
@@ -8,68 +7,18 @@ import {
 import styles from './PrivateSidebar.module.scss'
 import { supabase } from '../../lib/supabaseClient'
 import { getAvatarUrl } from '../../utils/avatar'
+import { useProfile  } from '../../hooks/useProfile'
 
-//Datos de sidebar.
-type SidebarProfile = {
-    display_name: string
-    avatar_id: string
-}
 
 function PrivateSidebar() {
     //Redirección
     const navigate = useNavigate()
-    //Guarda los datos mínimos para el perfil de usuario.
-    const [profile, setProfile] = useState<SidebarProfile | null>(null)
 
-    //Carga el perfil autenticado al mostrar el sidebar.
-    useEffect(() => {
-        let isMounted = true
-
-        async function loadSidebarProfile() {
-            //Obteniene el usuario autenticado desde Supabase Auth.
-            const { data: userData, error: userError } = await supabase.auth.getUser()
-
-            //Si el componente no está en pantalla, no actualiza.
-            if (!isMounted) {
-                return
-            }
-            
-            //Si no hay usuario, no carga perfil. 
-            if (userError || !userData.user) {
-                return
-            }
-
-            //Busca el perfil asociado al usuario autenticado.
-            const { data: profileData, error: profileError } = await supabase
-                .from('profiles')
-                .select('display_name, avatar_id')
-                .eq('id', userData.user.id)
-                .single()
-
-            //Si el componente ya no está en pantalla, no actualiza estado.
-            if (!isMounted) {
-                return
-            }
-
-            //Si falla la consulta, no rompe el sidebar.
-            if (profileError) {
-                return
-            }
-
-            //Guarda el perfil real.
-            setProfile(profileData)
-        }
-
-        loadSidebarProfile()
-
-        //Limpia al desmontar el componente.
-        return () => {
-            isMounted = false
-        }
-    }, [])
+    //Trae el perfil de user del Hook.
+    const { profile } = useProfile()
 
     //Nombre visible del user en el sidebar.
-    const userName = profile?.display_name || 'Usuari@'
+    const userName = profile?.display_name || 'Usuario'
 
     //Avatar.
     const avatarUrl = profile?.avatar_id

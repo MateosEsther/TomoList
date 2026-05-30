@@ -59,8 +59,8 @@
 .currentAvatar {
     display: grid;
     place-items: center;
-    width: 4rem;
-    height: 4rem;
+    width: 10rem;
+    height: 10rem;
     border-radius: 50%;
     border: 1px solid var(--border-soft);
     background: linear-gradient(
@@ -74,6 +74,15 @@
     font-weight: 800;
     line-height: 1;
     flex: 0 0 auto;
+
+    overflow: hidden;
+}
+
+.currentAvatar img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
 }
 
 /*Sección de selección de avatar.*/
@@ -111,29 +120,29 @@
         pointer-events: none;
     }
 
-    span {
-        display: grid;
-        place-items: center;
-        width: 3rem;
-        height: 3rem;
+    /* Imagen del avatar dentro de cada opción. */
+    img {
+        display: block;
+        width: 5rem;
+        height: 5rem;
         border-radius: 50%;
-        border: 1px solid var(--border);
+        border: 2px solid var(--border);
+        object-fit: cover;
         background: rgba(255, 255, 255, 0.04);
-        color: var(--text-main);
-        font-weight: 800;
         transition:
             border-color 0.15s ease,
-            background 0.15s ease,
-            transform 0.06s ease;
+            transform 0.06s ease,
+            box-shadow 0.15s ease;
     }
 
-    input:checked + span {
+    /* Estilo del avatar seleccionado. */
+    input:checked + img {
         border-color: var(--primary-600);
-        background: rgba(225, 29, 72, 0.18);
-        color: var(--text-light);
+        box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.22);
     }
 
-    &:hover span {
+    /* Pequeño efecto visual al pasar el ratón. */
+    &:hover img {
         transform: translateY(-1px);
         border-color: var(--primary-600);
     }
@@ -209,6 +218,25 @@
         background: rgba(255, 255, 255, 0.05);
         border-color: var(--primary-600);
     }
+}
+
+/*Mensajes visuales con error y éxito al guardar el perfil.*/
+.errorMessage {
+    padding: 0.75rem 0.875rem;
+    border: 1px solid rgba(239, 68, 68, 0.55);
+    border-radius: var(--radius);
+    background: rgba(239, 68, 68, 0.12);
+    color: rgb(252, 165, 165);
+    font-size: 0.9rem;
+}
+
+.successMessage {
+    padding: 0.75rem 0.875rem;
+    border: 1px solid rgba(34, 197, 94, 0.55);
+    border-radius: var(--radius);
+    background: rgba(34, 197, 94, 0.12);
+    color: rgb(134, 239, 172);
+    font-size: 0.9rem;
 }
 
 /*Tablet: formulario en dos columnas.*/
