@@ -97,6 +97,68 @@
     background: rgba(255, 255, 255, 0.04);
 }
 
+/*Selector visual de valoración con estrellas.*/
+.ratingStars {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/*Botón individual de cada estrella.*/
+.ratingStar {
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+
+    svg {
+        width: 2rem;
+        height: 2rem;
+        transition:
+            color 0.15s ease,
+            fill 0.15s ease,
+            transform 0.1s ease;
+    }
+
+    &:hover svg {
+        transform: scale(1.08);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--primary-600);
+        outline-offset: 3px;
+        border-radius: 0.25rem;
+    }
+}
+
+/*Estrellas seleccionadas.*/
+.ratingStarSelected {
+    color: var(--accent-yellow);
+    fill: var(--accent-yellow);
+}
+
+/*Mensajes de error o éxito al guardar la lectura.*/
+.errorMessage {
+    padding: 0.75rem 0.875rem;
+    border: 1px solid rgba(239, 68, 68, 0.55);
+    border-radius: var(--radius);
+    background: rgba(239, 68, 68, 0.12);
+    color: rgb(252, 165, 165);
+    font-size: 0.9rem;
+}
+
+.successMessage {
+    padding: 0.75rem 0.875rem;
+    border: 1px solid rgba(34, 197, 94, 0.55);
+    border-radius: var(--radius);
+    background: rgba(34, 197, 94, 0.12);
+    color: rgb(134, 239, 172);
+    font-size: 0.9rem;
+}
+
 /*Tablet: campos en dos columnas.*/
 @media (min-width: 700px) {
     .formGrid {
