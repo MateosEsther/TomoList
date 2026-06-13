@@ -196,6 +196,297 @@
     font-style: italic;
 }
 
+/*Botón para abrir la edición de una lectura.*/
+.editButton {
+    justify-self: start;
+    padding: 0.6rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text-main);
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--primary-600);
+    }
+}
+
+/*Agrupa las acciones disponibles para cada lectura.*/
+.readingActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+/*Botón para eliminar una lectura.*/
+.deleteButton {
+    justify-self: start;
+    padding: 0.6rem 0.85rem;
+    border: 1px solid rgba(239, 68, 68, 0.55);
+    border-radius: var(--radius);
+    background: transparent;
+    color: rgb(252, 165, 165);
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+
+    &:hover {
+        background: rgba(239, 68, 68, 0.12);
+        border-color: rgb(239, 68, 68);
+    }
+
+    &:focus-visible {
+        outline: 2px solid rgb(239, 68, 68);
+        outline-offset: 2px;
+    }
+}
+
+/*Fondo oscuro que cubre la pantalla mientras el modal está abierto.*/
+.modalBackdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    padding: var(--spacing-md);
+    background: rgba(2, 6, 23, 0.82);
+    backdrop-filter: blur(4px);
+}
+
+/*Tarjeta central del modal.*/
+.modalCard {
+    display: grid;
+    gap: var(--spacing-md);
+    width: min(100%, 560px);
+    max-height: calc(100vh - (var(--spacing-md) * 2));
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface-dark);
+    box-shadow: var(--shadow-md);
+    overflow-y: auto;
+
+    h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 800;
+    }
+}
+
+/*Título de la obra que se está editando.*/
+.modalReadingTitle {
+    margin: 0;
+    color: var(--accent-yellow);
+    font-size: 1.05rem;
+    font-weight: 800;
+}
+
+/*Agrupa los campos exclusivos de una lectura terminada.*/
+.modalReadFields {
+    display: grid;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+/*Campo individual dentro del modal.*/
+.modalField {
+    display: grid;
+    gap: 0.4rem;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+
+    input,
+    select,
+    textarea {
+        width: 100%;
+        padding: 0.75rem 0.875rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: rgba(2, 6, 23, 0.4);
+        color: var(--text-main);
+        font: inherit;
+        outline: none;
+
+        &:focus {
+            border-color: var(--primary-600);
+            box-shadow: 0 0 0 2px rgba(225, 29, 72, 0.35);
+        }
+    }
+
+    textarea {
+        min-height: 130px;
+        resize: vertical;
+    }
+}
+
+/*Selector visual de valoración dentro del modal.*/
+.ratingStars {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/*Botón individual de cada estrella.*/
+.ratingStar {
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+
+    svg {
+        width: 2rem;
+        height: 2rem;
+        transition:
+            color 0.15s ease,
+            fill 0.15s ease,
+            transform 0.1s ease;
+    }
+
+    &:hover svg {
+        transform: scale(1.08);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--primary-600);
+        outline-offset: 3px;
+        border-radius: 0.25rem;
+    }
+}
+
+/*Estrellas seleccionadas.*/
+.ratingStarSelected {
+    color: var(--accent-yellow);
+    fill: var(--accent-yellow);
+}
+
+/*Mensaje de error dentro del modal.*/
+.modalErrorMessage {
+    margin: 0;
+    padding: 0.75rem 0.875rem;
+    border: 1px solid rgba(239, 68, 68, 0.55);
+    border-radius: var(--radius);
+    background: rgba(239, 68, 68, 0.12);
+    color: rgb(252, 165, 165);
+    font-size: 0.9rem;
+}
+
+/*Mensaje visible tras eliminar correctamente una lectura.*/
+.successMessage {
+    margin: 0;
+    padding: 0.75rem 0.875rem;
+    border: 1px solid rgba(34, 197, 94, 0.55);
+    border-radius: var(--radius);
+    background: rgba(34, 197, 94, 0.12);
+    color: rgb(134, 239, 172);
+    font-size: 0.9rem;
+}
+
+/*Aviso antes de borrar los datos asociados a una lectura terminada.*/
+.pendingConfirmation {
+    display: grid;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    border: 1px solid rgba(245, 158, 11, 0.55);
+    border-radius: var(--radius);
+    background: rgba(245, 158, 11, 0.12);
+    color: rgb(253, 230, 138);
+
+    p {
+        margin: 0;
+    }
+}
+
+/*Acciones disponibles dentro del aviso de confirmación.*/
+.pendingConfirmationActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+/*Agrupa horizontalmente las acciones principales del modal.*/
+.modalActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+/*Botón principal para guardar la edición.*/
+.modalSaveButton {
+    justify-self: start;
+    padding: 0.65rem 0.9rem;
+    border: 1px solid var(--primary-600);
+    border-radius: var(--radius);
+    background: var(--primary-600);
+    color: var(--text-light);
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+
+    &:hover {
+        background: var(--primary-700);
+        border-color: var(--primary-700);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--primary-600);
+        outline-offset: 2px;
+    }
+}
+
+/*Botón destructivo para confirmar el borrado definitivo.*/
+.modalDeleteButton {
+    justify-self: start;
+    padding: 0.65rem 0.9rem;
+    border: 1px solid rgb(239, 68, 68);
+    border-radius: var(--radius);
+    background: rgb(185, 28, 28);
+    color: var(--text-light);
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+
+    &:hover {
+        background: rgb(153, 27, 27);
+    }
+
+    &:focus-visible {
+        outline: 2px solid rgb(239, 68, 68);
+        outline-offset: 2px;
+    }
+}
+
+/*Botón provisional para cerrar el modal.*/
+.modalCloseButton {
+    justify-self: start;
+    padding: 0.65rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text-main);
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--primary-600);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--primary-600);
+        outline-offset: 2px;
+    }
+}
+
 /*Tablet.*/
 @media (min-width: 700px) {
     .readingGrid {
@@ -217,6 +508,17 @@
     }
 
     .readingList .listDate {
+        justify-self: end;
+    }
+
+    /*En vista lista, la información queda a la izquierda
+    y el botón Editar a la derecha.*/
+    .readingList .readingCard {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+    }
+
+    .readingList .readingActions {
         justify-self: end;
     }
 }
