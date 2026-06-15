@@ -167,6 +167,27 @@
     }
 }
 
+/*Mensaje de error de carga de conteos.*/
+.errorMessage {
+    margin: 0;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--primary-600);
+    border-radius: var(--radius);
+    background: rgba(225, 29, 72, 0.12);
+    color: var(--text-main);
+}
+
+/*Conteo visible dentro de cada tarjeta de lista.*/
+.cardCount {
+    width: fit-content;
+    padding: 0.35rem 0.65rem;
+    border-radius: var(--radius);
+    background: rgba(250, 204, 21, 0.12);
+    color: var(--accent-yellow);
+    font-size: 0.9rem;
+    font-weight: 800;
+}
+
 /*Información visual de fechas.*/
 .dateInfo {
     display: flex;
