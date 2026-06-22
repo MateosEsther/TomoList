@@ -3,35 +3,35 @@
 Aquí se recoge el diseño inicial del modelo de datos de TomoList.
 
 La finalidad de este documento es dejar claras las entidades principales, sus campos, las reglas de negocio y los
-diagramas necesarios antes de comenzar el desarrollo del backend.
+diagramas necesarios para entender el modelo de datos del proyecto.
 
 TomoList es una app web de gestión personal de lecturas, en la que el usuario puede guardar lecturas de tipo manga o 
 literatura, clasificarlas como pendientes o leídas, y registrar información personal como valoración, reseña y 
 mes aproximado de lectura.
 
-La aplicación también podrá consultar APIs externas, cuando estén disponibles, con fines de enriquecimiento 
+La aplicación también consulta APIs externas, cuando estén disponibles, con fines de enriquecimiento 
 aportando la sinopsis y la portada.
 
 ---
 
 ## 1.Entidad principal: Tome
 
-Es la entidad central de la app web y representa las lecturas guardadas por el usuario independientemente del tipo.
+Es la entidad central de la app web y representa las lecturas guardadas por cada ususari@ independientemente del tipo.
 
-Un `Tome` pertenece siempre a un usuario y representa una lectura concreta dentro de su biblioteca personal.
+Un `Tome` pertenece siempre al usuari@ únic@ y representa una lectura concreta dentro de su biblioteca personal.
 
 ## 1.2.Modelo provisional de Tome
 
 ```ts
 type Tome = {
     id: number
-    userId: number
+    user_id: number
 
     title: string
-    titleNormalized: string
+    title_normalized: string
 
     author: string
-    authorNormalized: string
+    author_normalized: string
 
     type: 'manga' | 'literature'
     status: 'pending' | 'read'
@@ -39,18 +39,18 @@ type Tome = {
     coverUrl?: string
     synopsis?: string
 
-    readMonth?: string
+    read_month?: string
     rating?: number
     review?: string
 
-    createdAt: string
-    updatedAt: string
+    created_at: string
+    updated_at: string
 }
 ```
 
 ## 1.3.Origen de los datos
 
-### DATOS INTRODUCIDOS POR EL USUARIO
+### DATOS INTRODUCIDOS POR USER
 
 ```txt
 title
@@ -62,7 +62,7 @@ rating
 review
 ```
 
-El usuario introduce manualmente los datos principales de la lectura. 
+La introducción de los datos principales de la lectura es manual mediante el formulario. 
 Si la lectura está marcada como leída, se desplegarán datos adicionales a introducir: `rating` será obligatorio
  y `review` y `readMonth` opcionales.
 
@@ -72,31 +72,31 @@ coverUrl
 synopsis
 ```
 
-Si las APIs no devuelven portada o sinopsis, la lectura debe poder guardarse igualmente.
+Si las APIs no devuelven portada o sinopsis, la lectura se guarda igualmente.
 
 ### DATOS GENERADOS POR EL SISTEMA
 ```txt
 id
 userId
-titleNormalized
-authorNormalized
-createdAt
-updatedAt
+title_normalized
+author_normalized
+created_at
+updated_at
 ```
 
 Son identificadores, fechas de creación y actualización, y versiones normalizadas del título y del autor para evitar duplicados.
 
 ## 1.4.Reglas de negocio de Tome
 
-### Regla 1: una lectura pertenece a un usuario
-Cada `Tome` debe pertenecer a un único usuario. 
-Un usuario puede tener muchas lecturas guardadas.    
+### Regla 1: una lectura pertenece a una única usuari@
+Cada `Tome` debe pertenecer a una única usuari@. 
+Una usuari@ puede tener muchas lecturas guardadas.    
 
 ### Regla 2: no se pueden repetir lecturas
-Un mismo usuario no puede guardar dos veces la misma lectura.
+Misma usuari@ no puede guardar dos veces la misma lectura.
 Restricción lógica:
 ```txt
-userId + titleNormalized + authorNormalized + type
+user_id + title_normalized + author_normalized + type
 ```
 
 ### Regla 3: una lectura pendiente no tiene valoración, reseña ni mes de lectura
@@ -116,7 +116,7 @@ Restricción lógica:
 si status = read,
 entonces rating != null.
 ```
-`review`y `readMonth`son opcionales.
+`review`y `read_month`son opcionales.
 
 
 ### Regla 5: cambiar una lectura de leída a pendiente elimina los datos del estado `read` de lectura
@@ -127,7 +127,7 @@ review
 readMonth
 ```
 
-Antes de aplicar el cambio se mostrará un aviso al usuario.
+Antes de aplicar el cambio se muestra un aviso.
 
 ### Regla 6: el mes de lectura es orientativo
 Permite dar una referencia aproximada del momento de la lectura. 
@@ -142,41 +142,42 @@ YYYY-MM
 
 ```mermaid
 erDiagram
-    USER ||--o{ TOME : owns
+    PROFILE ||--o{ TOME : owns
 
-    USER {
-        number id
+    PROFILE {
+        uuid id
         string name
-        string email
-        string passwordHash
-        string avatarId
-        datetime createdAt
-        datetime updatedAt
+        string surname
+        string display_name
+        string avatar_id
+        datetime created_at
+        datetime updated_at
     }
 
     TOME {
         number id
-        number userId
+        uuid user_id
         string title
-        string titleNormalized
+        string title_normalized
         string author
-        string authorNormalized
+        string author_normalized
         string type
         string status
         string coverUrl
         string synopsis
-        string readMonth
+        string read_month
         number rating
         string review
-        datetime createdAt
-        datetime updatedAt
+        datetime created_at
+        datetime updated_at
     }
 ```
 
 Este diagrama representa la relación principal del sistema:
 
-- Un usuario puede tener muchas lecturas guardadas.
-- Cada `Tome` pertenece a un único usuario.
+- Un perfil puede tener muchas lecturas guardadas.
+- Cada `Tome` pertenece a una única usuari@.
+- La autenticación de usuari@ se gestiona mediante Supabase Auth.
 
 ---
 
@@ -191,14 +192,13 @@ stateDiagram-v2
     Read --> Pending: Marcar como pendiente con aviso
 
     Read --> Read: Editar valoración, reseña o mes de lectura
-    Pending --> Pending: Editar título, autor, tipo, portada o sinopsis
+    Pending --> Pending: Mantener como pendiente
 ```
 
 Regla asociada al cambio de `read` a `pending`:
 
 ```txt
-Si un Tome pasa de read a pending,
-se eliminan rating, review y readMonth.
+Si un Tome pasa de read a pending, se eliminan rating, review y readMonth previo aviso.
 ```
 
 ---
@@ -212,10 +212,10 @@ flowchart TD
     C --> D[Selecciona estado]
 
     D -->|Pendiente| E[No se muestran valoración, reseña ni mes de lectura]
-    D -->|Leída| F[Se muestran rating, review y readMonth]
+    D -->|Leída| F[Se muestran rating, review y read_month]
 
     F --> G[Usuario introduce rating obligatorio]
-    G --> H[Usuario puede añadir review y readMonth]
+    G --> H[Usuario puede añadir review y read_month]
     H --> I[Guardar lectura]
 
     E --> I[Guardar lectura]
@@ -242,7 +242,7 @@ flowchart TD
 
     B -->|Pending| C[Usuario marca como leído]
     C --> D[Se habilita rating obligatorio]
-    D --> E[Usuario puede añadir review y readMonth]
+    D --> E[Usuario puede añadir review y read_month]
     E --> F[Guardar cambios]
     F --> G[Tome pasa a lista de leídas]
 
@@ -251,26 +251,26 @@ flowchart TD
     I --> J{¿Confirma el cambio?}
 
     J -->|No| K[Se mantiene como leído]
-    J -->|Sí| L[Eliminar rating, review y readMonth]
+    J -->|Sí| L[Eliminar rating, review y read_month]
     L --> M[Guardar cambios]
     M --> N[Tome pasa a lista de pendientes]
 ```
 ---
 
-## 6.Entidad User
+## 6.Entidad Profile
 
-La entidad `User` representa a cada usuario registrado en TomoList. 
-Cada usuario podrá iniciar sesión, gestionar su perfil, elegir un avatar predefinido y guadar sus propias lecturas.
+La entidad `profile` representa los datos de perfil para cada usuari@ registrad@ en TomoList. 
+Cada usuari@ puede iniciar y cerrar sesión, gestionar su perfil, elegir un avatar predefinido,
+gestionar su biblioteca y consultar información de sus listas.
 
-## 6.1.Modelo provisional de User
+## 6.1.Modelo de Profile
 ```ts
-type User = {
-    id: number
+type profile = {
+    id: string
 
     name: string
-    email: string
-    passwordHash: string
-
+    surname: string
+    display_name: string
     avatarId: string
 
     createdAt: string
@@ -279,199 +279,103 @@ type User = {
 ```
 ## 6.2.Origen de los datos
 
-### DATOS INTRODUCIDOS POR EL USUARIO
+### DATOS INTRODUCIDOS POR USER
 ```txt
 name
-email
-password
-avatarId
+surname
 ```
-Nombre, email y contraseña se introducen durante el registro. 
-El avatar se podrá modificar desde la pantalla perfil una vez iniciada sesión.
+Nombre y apellidos se introducen durante el registro. 
+El avatar y el nombre visible (`display_name`) se podrá modificar desde la pantalla "Mi perfil" una vez iniciada sesión.
 
 ### DATOS GENERADOS POR EL SISTEMA
 ```txt
 id
-passwordHash
-createdAt
-updatedAt
+display_name
+avatar_id
+created_at
+updated_at
 ```
-El sistema generará automáticamente estos datos y transformará la constraseña en `passwordHash`.
+El campo `id` se corresponde con `user_id` autenticando en Supabase Auth.
+El campo `display_name` inicializa con el valor del campo `name` y se puede editar posteriormente desde el perfil.
+EL campo `avatar_id` guarda el identificador del avatar seleccionado en el perfil.
 
 ## 6.3.Reglas de negocio de User
 
-### Regla 1: el email debe ser único
-No pueden existir dos usuarios registrados con el mismo email.
+### Regla 1: el perfil es único
+Cada usuari@ registrado debe tener un perfil asociado.
+Relación lógica:
+    Supabase Auth user 1 ---- 1 profile
 
-### Regla 2: la contraseña se guarda hasheada
-Las contraseñas no se pueden guardar directamente en texto plano por seguridad.
-Se transforman en un hash seguro antes de guardarse.
+### Regla 2: email y contraseña pertenecen a Supabase Auth
+Email, constraseña y user sesion no se guardan en `profiles`.
 
-### Regla 3: un usuario puede tener muchas lecturas
-Un usuario puede guardar muchas lecturas. 
+### Regla 3: cada usuari@ puede tener muchas lecturas
+Una usuari@ puede guardar muchas lecturas. 
 Relación lógica:
 ```txt
-User 1 ---- N Tome
+profile 1 ---- N Tome
 ```
 
-### Regla 4: avatar guardado en avatarId
-El usuario podrá elegir un avatar entre los disponibles predefinidos.
-La base de datos guardará solo el identificador del avatar.
+### Regla 4: avatar guardado en avatar_id
+Cada usuari@ podrá elegir un avatar entre los disponibles predefinidos.
+La base de datos guardará solo el identificador del avatar seleccionado.
 
 ---
 
 ## 7. Avatares predefinidos
 
 TomoList usará avatares predefinidos que vivirán en el frontend y sus imágenes estarán una carpeta
-públoca del proyecto. Estructura orientativa:
+pública del proyecto. Estructura orientativa:
 ```txt
 public/
 └── avatars/
     ├── avatar-01.png
     ├── avatar-02.png
     ├── avatar-03.png
-    └── avatar-04.png
+    ├── avatar-04.png
+    ├── ...
+    └── avatar-18.png
 ```
-En BD solo se guardará el identificador `avatarId` y con ello mostrará la imagen correspondiente.
+En BD solo se guardará el identificador `avatar_id` y con ello mostrará la imagen correspondiente.
 
 ---
 
 ## 8.Autenticación y sesión
 
-TomoList tendrá un sistema de autenticación para permitir que cada usuario acceda únicamente a sus propias lecturas.
-La sesión se gestionará desde el backend mediante una cookie segura.
-El frontend no guardará tokens sensibles en `localStorage`.
+TomoList usa Supabase Auth para gesrionar la utenticación y la sesión de usuari@s. Este sistema permite:
+- registrarse
+- iniciar/cerrar sesión
+- mantener la sesión activa
+- recuperar la contraseña
+
+Al iniciar sesión, Supabase Auth mantiene la sesión activa en el navegador y a partir de aquí, la app
+sabe si está autenticad@ o no y así consultar los datos asociados.
+
 
 ## 8.1.Modelo provisional de sesión
-```ts
-type Session = {
-    id: number
-    userId: number
 
-    sessionTokenHash: string
+User autenticado se relaciona con las tablas propias del proyecto mediante su identificador.
+En `profiles` el campo es `id` y en en `tomes` es `user_id`, así cada perfil y cada lectura quedan vinculados
+al user autenticado correspondiente.
 
-    createdAt: string
-    expiresAt: string
-    revokedAt?: string
-}
-```
 
-## 8.2.Origen de los datos
+## 8.2.Reglas de negocio de sesión
 
-### DATOS GENERADOS POR EL SISTEMA
-```txt
-id
-userId
-sessionTokenHash
-createdAt
-expiresAt
-revokedAt
-```
+### Regla 1: cada usuari@ accede solo a sus datos
+Cada sesión pertenece a un id único accediendo así solo a su propio perfil y lecturas.
 
-El sistema genera la sesión cuando el usuario inicia sesión correctamente.
-El campo `sessionTokenHash` representa la versión hasheada del identificador seguro de la sesión.
-La cookie será enviada por el backend al navegador y deberá configurarse como segura.
+### Regla 2: la sesión identifica al usuari@ autenticad@
+La sesión activa permite saber qué usuario está usando la aplicación y qué datos le pertenecen.
 
-## 8.3.Reglas de negocio de sesión
-
-### Regla 1: una sesión pertenece a un usuario
-Cada sesión pertenece a un único usuario.
-Un usuario puede tener varias sesiones activas si inicia sesión desde distintos dispositivos o navegadores.
-
-### Regla 2: el frontend no almacena tokens sensibles
-El frontend no debe guardar tokens de sesión en `localStorage`.
-La sesión se gestionará mediante cookie segura configurada desde backend.
-
-### Regla 3: una sesión debe poder expirar
-Toda sesión debe tener una fecha de expiración.
-Restricción lógica:
-```txt
-expiresAt != null
-```
-Una sesión solo será válida si no ha expirado y no ha sido revocada.
-Condición de sesión válida:
-```txt
-expiresAt > fecha actual
-revokedAt = null
-```
-
-### Regla 4: cerrar sesión invalida la sesión
-Al cerrar sesión, la sesión debe quedar invalidada.
-Restricción lógica:
-```txt
-revokedAt != null
-```
-Una sesión revocada no debe permitir acceder a rutas privadas.
+### Regla 3: cerrar sesión finaliza el acceso privado
+Al cerrar sesión, se pierde el acceso a las rutas privadas de TomoList.
 
 ---
 
 ## 9.Recuperación de contraseña
 
-TomoList tendrá un flujo de recuperación de contraseña para usuarios que no recuerden su clave de acceso.
-Este flujo se inicia desde la pantalla `ForgotPasswordPage`.
+TomoList usa Supabase Auth para gestionar la recuperación de contraseñas. Este flujo se inicia desde `ForgotPasswordPage`.
+User introduce su email y Supabase Auth se encarga de enviar las instrucciones de recuperación de contraseña.
 
-## 9.1.Modelo provisional de PasswordResetToken
-```ts
-type PasswordResetToken = {
-    id: number
-    userId: number
-
-    tokenHash: string
-
-    createdAt: string
-    expiresAt: string
-    usedAt?: string
-}
-```
-
-## 9.2.Origen de los datos
-
-### DATOS GENERADOS POR EL SISTEMA
-```txt
-id
-userId
-tokenHash
-createdAt
-expiresAt
-usedAt
-```
-
-El sistema genera un token temporal cuando el usuario solicita recuperar su contraseña y guarda su versión hasheada.
-Ese token se usará para permitir crear una nueva contraseña dentro de un tiempo limitado.
-
-## 9.3.Reglas de negocio de recuperación de contraseña
-
-### Regla 1: el token pertenece a un usuario
-Cada token de recuperación pertenece a un único usuario.
-
-### Regla 2: el token debe expirar
-El token de recuperación debe tener una fecha de expiración.
-Restricción lógica:
-
-```txt
-expiresAt != null
-```
-
-### Regla 3: el token solo puede usarse una vez
-Para poder usarse, el token debe cumplir:
-```txt
-expiresAt > fecha actual
-usedAt = null
-```
-Después de usarse, debe quedar marcado como utilizado.
-Restricción lógica:
-```txt
-usedAt != null
-```
-
-### Regla 4: una contraseña nueva sustituye a la anterior
-Cuando el usuario crea una nueva contraseña, el sistema debe generar un nuevo `passwordHash`.
-La contraseña anterior deja de ser válida.
-
-### Regla 5: el token no debe revelar si un email existe
-Cuando un usuario solicita recuperación de contraseña, la respuesta de la aplicación no debe revelar si el email está registrado o no.
-Mensaje orientativo:
-```txt
-Si el email existe en TomoList, recibirás instrucciones para recuperar tu contraseña.
 ```
 ---

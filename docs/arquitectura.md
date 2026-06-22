@@ -6,7 +6,7 @@ Este documento recoge la arquitectura definida para TomoList.
 
 ## 1.Arquitectura general
 
-Tendrá la siguiente arquitectura:
+La arquitectura es la siguiente:
 
 ```txt
 Frontend: React + Vite
@@ -16,31 +16,38 @@ Base de datos: PostgreSQL en Supabase
 Autenticación: Supabase Auth
 Seguridad de datos: Row Level Security
 ```
-
+Supabase actúa como servicio backend (autenticación, BD, reglas de seguridad y acceso a datos)
 ---
 
 ## 2.Frontend -> React, Vite, TypeScript
 
-Permitirá al usuari@:
-- registrarse
-- iniciar sesión
+Desde la interfaz se puede:
+- registrarse como usuari@
+- iniciar y cerrar sesión
 - recuperar contraseña
 - gestionar su perfil
 - gestionar lecturas (añadir, eliminar, editar, valorar y comentar lecturas)
-- consultar sus listas
+- consultar listas 
+- filtrar y buscar lecturas dentro de las listas
+
+React se encarga de construir la interfaaz y gestionar el estado de los componentes. Vite como herramienta de desarrollo y
+empaquetado y TypeScript para tipar estáticamente mejorando la seguirdad del código.
 
 ---
 
 ## 3.Backend -> Supabase
 
-Se usará para:
+Se usa para:
 - autenticación de usuari@s
-- base de datos
+- almacenamiento de datos en una base de datos PostgreSQL
 - consultas de lecturas
 - inserción de lecturas
 - edición de lecturas
 - eliminación de lecturas
-- reglas de seguridad por usuari@
+- aplicar reglas de seguridad por usuari@ mediante Row Level Secyrity
+- gestionar datos de perfil
+
+El acceso a Supabase se hace desde el frontend mediante el cliente oficial de Supabase configurado en la app.
 
 ---
 
@@ -48,24 +55,62 @@ Se usará para:
 
 Tablas:
 - profiles: información de perfil de usuari@
+    campos: 
+    - id
+    - name
+    - surname
+    - display_name
+    - avatar_id
+    - created_at
+    - updated_at
+  
 - tomes: lecturas personales por usuari@
+    campos: 
+    - id
+    - user_id
+    - title
+    - title_normalized
+    - author
+    - author_normalized
+    - type
+    - status
+    - cover_url
+    - synopsis
+    - read_month
+    - rating
+    - review
+    - created_at
+    - updated_at
+
+Relaciones:
+- profiles: con usuario autenticado de Supabase Auth
+- tomes: mediante el campo `user_id` para asociar cada lectura a su user propietario
+
+**`title` y `author` almacenan datos visiibles de la lectura mientras que `title_normalized` y `author_normalized` 
+son para trabajar con versiones normalizadas de estos datos de utilidad en búsquedas, comparación y control de duplicados.
+`type` distingue entre manga o literatura y `status` indica si la lectura está leída o pendiente.
+Los campos `rating`, `read_month` y `review`almacenan datos pertenecientes solo al estado leída de lecturas.
+
 
 ---
 
 ## 5.Autenticación -> Supabase Auth
 
-Permitirá:
-- registro
+Permite:
+- registros nuevos
 - inicio de sesión
 - cierre de sesión
 - recuperación de contraseña
-- mantenimiento de sesión
+- mantenimiento de sesión activa en el navegador
+- asociación de datos de la app con el user autenticado
 
 ---
 
 ## 6.Seguridad de datos -> Row Level Security
 
 Regla principal: Cada usuari@ solo puede acceder a sus propios datos.
-Se gestionará mediante el campo `user_id` para asociar cada lectura con su usuari@ propietari@
 
-
+Se consigue asociando los registros privados al campo  `user_id` de la tabla tomes con `id` de la tabla profiles y
+aplicando políticas RLS en Supabase.
+Así, aunque las consultas se hagan desde el frontend, Supabase limita el acceso para que cada usuari@ 
+solo tenga acceso a los registros que le pertenecen.
