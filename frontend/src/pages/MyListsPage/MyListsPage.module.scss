@@ -38,6 +38,84 @@
     box-shadow: var(--shadow-sm);
 }
 
+/*Icono decorativo del bloque de filtros.*/
+.filtersIcon {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    svg {
+        width: 1rem;
+        height: 1rem;
+        color: var(--accent-yellow);
+    }
+}
+
+/*Sección de resultados filtrados.*/
+.resultsSection {
+    display: grid;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface-dark);
+    box-shadow: var(--shadow-sm);
+}
+
+/*Título de la sección de resultados.*/
+.resultsTitle {
+    margin: 0;
+    color: var(--accent-yellow);
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+/*Mensajes como "cargando" o "no se encontraron resultados".*/
+.resultsMessage {
+    margin: 0;
+    color: var(--text-dim);
+}
+
+/*Contenedor de la lista de resultados.*/
+.resultsList {
+    display: grid;
+    gap: var(--spacing-sm);
+}
+
+/*Tarjeta individual de cada resultado.*/
+.resultCard {
+    display: grid;
+    gap: 0.35rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: rgba(2, 6, 23, 0.35);
+}
+
+/*Título de cada lectura.*/
+.resultTitle {
+    margin: 0;
+    color: var(--text-main);
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+/*Línea inferior con autor, tipo y estado.*/
+.resultMeta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    color: var(--text-dim);
+    font-size: 0.92rem;
+}
+
+/*Añade un separador visual entre elementos, excepto en el primero.*/
+.resultMeta span + span::before {
+    content: '·';
+    margin-right: 0.5rem;
+    color: var(--accent-yellow);
+}
+
 /*Buscador.*/
 .searchBox {
     display: flex;
@@ -79,12 +157,6 @@
         font-size: 0.9rem;
     }
 
-    svg {
-        width: 1rem;
-        height: 1rem;
-        color: var(--accent-yellow);
-    }
-
     select {
         width: 100%;
         padding: 0.65rem 0.75rem;
@@ -95,6 +167,39 @@
         outline: none;
 
         &:focus {
+            border-color: var(--primary-600);
+            box-shadow: 0 0 0 2px rgba(225, 29, 72, 0.35);
+        }
+    }
+}
+
+/*Acciones del panel de búsqueda y filtros.*/
+.filterActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+
+    button {
+        padding: 0.65rem 0.9rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: rgba(2, 6, 23, 0.4);
+        color: var(--text-main);
+        font-weight: 700;
+        cursor: pointer;
+        transition:
+            border-color 0.15s ease,
+            transform 0.15s ease,
+            background 0.15s ease;
+
+        &:hover {
+            transform: translateY(-1px);
+            border-color: var(--primary-600);
+            background: rgba(225, 29, 72, 0.12);
+        }
+
+        &:focus {
+            outline: none;
             border-color: var(--primary-600);
             box-shadow: 0 0 0 2px rgba(225, 29, 72, 0.35);
         }
@@ -229,6 +334,14 @@
     .toolsPanel {
         grid-template-columns: 1.4fr 1fr;
         align-items: end;
+    }
+
+    .filtersIcon {
+        grid-column: 1 / -1;
+    }
+
+    .filterActions {
+    grid-column: 1 / -1;
     }
 
     .filters {
