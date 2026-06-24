@@ -32,6 +32,8 @@ Desde la interfaz se puede:
 
 React se encarga de construir la interfaaz y gestionar el estado de los componentes. Vite como herramienta de desarrollo y
 empaquetado y TypeScript para tipar estáticamente mejorando la seguirdad del código.
+**La página "Mis listas" funciona como vista general de la biblioteca del usuario, mostrando accesos a las listas principales,
+conteos de lecturas y resultados filtrados cuando el usuario realiza una búsqueda o aplica un filtro.
 
 ---
 
