@@ -1,4 +1,4 @@
--- 03_check_rls_tomes.sql
+-- 01_check_rls_tomes.sql
 -- Consulta para revisar el estado de RLS y las políticas de la tabla tomes.
 
 select
