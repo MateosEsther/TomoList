@@ -7,11 +7,12 @@ import {
 import { Link } from 'react-router'
 import styles from './MyListsPage.module.scss'
 import PrivateSidebar from '../../components/PrivateSidebar/PrivateSidebar'
+import { formatTitle, formatAuthor } from '../../utils/text'
 import { supabase } from '../../lib/supabaseClient'
 
 //Datos de lectura recogidos de Supabase para la info de conteos, filtros...
 type ReadingItem = {
-    id: number
+    id: string
     title: string
     author: string
     type: 'manga' | 'literature'
@@ -27,26 +28,6 @@ type ReadingCounts = {
     mangaRead: number
     literaturePending: number
     literatureRead: number
-}
-
-//Formatos de salida de los filtros.
-function formatTitle(title: string) {
-    const normalizedTitle = title.trim().toLowerCase()
-
-    if (!normalizedTitle){
-        return ''
-    }
-
-    return normalizedTitle.charAt(0).toUpperCase() + normalizedTitle.slice(1)
-}
-
-function formatAuthor(author: string) {
-    return author
-        .trim()
-        .toLowerCase()
-        .split(/\s+/)
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ')
 }
 
 //Estado inicial de los conteos. Fuera del componente para reuutilizarlo en caso de error.

@@ -171,7 +171,7 @@ function PrivateSidebar() {
             {/*Acción principal.*/}
             <Link className={styles.addTomeLink} to="/anadir-tomo">
                 <Plus aria-hidden="true" />
-                Añadir tomo
+                Añadir lectura
             </Link>
 
             {/*Cierre de sesión.*/}

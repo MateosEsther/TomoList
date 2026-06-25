@@ -127,7 +127,7 @@ function AddTomePage() {
             <main className={styles.content}>
                 <header className={styles.pageHeader}>
                     <div>
-                        <h1>Añadir tomo</h1>
+                        <h1>Añadir lectura</h1>
 
                         <p>
                             Registra una lectura nueva, ya sea pendiente o que forme parte de tu lista de leídas.
@@ -253,7 +253,7 @@ function AddTomePage() {
                             </section>
                         )}
 
-                        <PrimaryButton type="submit">Guardar tomo</PrimaryButton>
+                        <PrimaryButton type="submit">Guardar lectura</PrimaryButton>
 
                         {/*Mensajes posibles al pulsar guardar.*/}
                         {errorMessage && (

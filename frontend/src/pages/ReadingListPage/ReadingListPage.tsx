@@ -8,10 +8,7 @@ import { useParams } from 'react-router';
 import PrivateSidebar from '../../components/PrivateSidebar/PrivateSidebar';
 import styles from './ReadingListPage.module.scss'
 import { supabase } from '../../lib/supabaseClient';
-import { 
-    formatAuthor,
-    formatTittle,
-} from '../../utils/text';
+import { formatTitle, formatAuthor } from '../../utils/text';
 import { Star } from 'lucide-react'
 
 
@@ -422,7 +419,7 @@ function ReadingListPage() {
                                 )}
 
                                 <div className={styles.readingInfo}>
-                                    <h2>{formatTittle(reading.title)}</h2>
+                                    <h2>{formatTitle(reading.title)}</h2>
 
                                     <p className={styles.author}>
                                         {formatAuthor(reading.author)}
@@ -511,7 +508,7 @@ function ReadingListPage() {
                             </h2>
 
                             <p className={styles.modalReadingTitle}>
-                                {formatTittle(selectedReading.title)}
+                                {formatTitle(selectedReading.title)}
                             </p>
 
                             {/*Estado editable de la lectura.*/}
@@ -665,7 +662,7 @@ function ReadingListPage() {
                                 ¿Seguro que quieres eliminar 
                                 {' '}
                                 <strong>
-                                    {formatTittle(readingToDelete.title)}
+                                    {formatTitle(readingToDelete.title)}
                                 </strong>
                                 {' '}
                                 de tu biblioteca?

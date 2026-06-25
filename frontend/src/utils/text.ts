@@ -1,6 +1,6 @@
 //Corrección visual ortográfica del título y autora/o
-export function formatTittle(title: string) {
-    const cleanTitle = title.trim()
+export function formatTitle(title: string) {
+    const cleanTitle = title.trim().toLocaleLowerCase()
         
         return cleanTitle.replace(
             /\p{L}/u,
@@ -9,8 +9,8 @@ export function formatTittle(title: string) {
 }
 
 export function formatAuthor(author: string) {
-    const cleanAuthor = author.trim()
-
+    const cleanAuthor = author.trim().toLocaleLowerCase()
+    
         return cleanAuthor.replace(
             /(^|[\s'-])\p{L}/gu,
             (firstLetter) => firstLetter.toUpperCase()
