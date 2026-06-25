@@ -2,7 +2,7 @@
 import { useState } from 'react'
 //FormEvent tipa el evento del form
 import type { FormEventHandler } from 'react'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 
 import AuthInput from '../../components/AuthInput/AuthInput'
 import PrimaryButton from '../../components/PrimaryButton/PrimaryButton'
@@ -14,6 +14,8 @@ function RegisterPage() {
     
     const [errorMessage, setErrorMessage] = useState('')
     const [successMessage, setSuccessMessage] = useState('')
+    //Hook usable solo dentro del componente.
+    const navigate = useNavigate()
 
     const handleRegister: FormEventHandler<HTMLFormElement> = async (event) => {
         //Evita que el navegador recargue la página al enviar el form.
@@ -44,7 +46,8 @@ function RegisterPage() {
             return
         }
 
-        const { error } = await supabase.auth.signUp({
+        //Data para saber si user está autenticado o no.
+        const { data, error } = await supabase.auth.signUp({
             email,
             password,
             options: {
@@ -61,9 +64,16 @@ function RegisterPage() {
             return
         }
         
-        //Resetea valores del form con la cuenta creada correctamente.
+        //Si Supabase devuelve data(sesión), user puede entrar sin confirmar email.
+        if (data.session) {
+            navigate('/mis-listas')
+            return
+        }   
+        //Si no hay data(no devuelve sesión), falta la confirmación del email.
         form.reset()
-        setSuccessMessage('Cuenta creada correctamente.')
+        setSuccessMessage(
+            'Cuenta creada. Revisa tu email para confirmar tu cuenta.'
+        )
     }
 
 
