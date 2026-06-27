@@ -9,6 +9,7 @@ import MyListsPage from './pages/MyListsPage/MyListsPage'
 import AddTomePage from './pages/AddTomePage/AddTomePage'
 import ProfilePage from './pages/ProfilePage/ProfilePage'
 import ReadingListPage from './pages/ReadingListPage/ReadingListPage'
+import ResetPasswordPage from './pages/ResetPasswordPage/ResetPasswordPage'
 
 //Componente protector de rutas privadas.
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
@@ -26,6 +27,9 @@ function App() {
 
             {/*Ruta de recuperación de contraseña.*/}
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+
+            {/*Ruta de restableciemiento de contraseña.*/}
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
 
             {/*Ruta a mis listas.*/}
             <Route 
