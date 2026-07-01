@@ -239,6 +239,20 @@
     font-size: 0.9rem;
 }
 
+/*Formulario de cambio de contraseña.*/
+.passwordForm {
+    display: grid;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-sm);
+}
+
+.passwordFormActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-sm);
+}
+
 /*Tablet: formulario en dos columnas.*/
 @media (min-width: 700px) {
     .profileForm {

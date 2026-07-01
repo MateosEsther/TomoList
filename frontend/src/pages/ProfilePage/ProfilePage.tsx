@@ -6,6 +6,8 @@ import styles from './ProfilePage.module.scss'
 import { AVATAR_IDS, getAvatarUrl } from '../../utils/avatar';
 import { useProfile } from '../../hooks/useProfile';
 import type { Profile } from '../../context/ProfileContext';
+import AuthInput from '../../components/AuthInput/AuthInput';
+import type { FormEventHandler } from 'react';
 
 //Datos que recibe el form desde ProfilePage.
 type ProfileFormProps = {
@@ -64,15 +66,7 @@ function ProfilePage() {
 
                 {/*Sección de seguridad.*/}
                 <section className={styles.securityCard}>
-                    <h2>Seguridad</h2>
-
-                    <p>
-                        Cambio de contraseña.
-                    </p>
-
-                    <button type="button" className={styles.secondaryButton}>
-                        Cambiar contraseña
-                    </button>
+                    <ChangePasswordForm />
                 </section>
             </main>
         </div>
@@ -283,4 +277,151 @@ function ProfileForm ({
             </form>
         </section>
     )
+}
+
+function ChangePasswordForm() {
+
+    //Muestra o no el formularo de cambio de contraseña.
+    const [isFormVisible, setIsFormVisible] = useState(false)
+    //Validaciones de Supabase.
+    const [errorMessage, setErrorMessage] = useState('')
+    //Confirmación de éxito al guardarse.
+    const [successMessage, setSuccessMessage] = useState('')
+
+    useEffect(() => {
+        if(!successMessage) {
+            return
+        }
+
+        //Timeout para eliminar el mensaje de éxito después de 3 segundos.
+        const timeout = setTimeout(() => {
+            setSuccessMessage('')
+        }, 3000)
+
+        return () => {
+            clearTimeout(timeout)
+        }
+    }, [successMessage])
+
+    const handleChangePassword: FormEventHandler<HTMLFormElement> = async (event) => {
+        event.preventDefault()
+
+        setErrorMessage('')
+        setSuccessMessage('')
+
+        //Referencia al form.
+        const form = event.currentTarget
+        //Guarda los datos del form.
+        const formData = new FormData(form)
+
+        //Guarda los valores de los inputs nuevos.
+        const password = String(formData.get('password') ?? '')
+        const confirmPassword = String(formData.get('confirmPassword') ?? '')
+
+        //Valida campos obligatorios.
+        if (!password || !confirmPassword) {
+            setErrorMessage('Ambos campos son obligatorios.')
+            return
+        }
+
+        //Valida que las contraseñas coincidan.
+        if (password !== confirmPassword) {
+            setErrorMessage('Las contraseñas deben coincidir.')
+            return
+        }
+
+        //Actualiza password en Supabase Auth.
+        const { error } = await supabase.auth.updateUser({
+            password,
+        })
+
+        //Error en Supabase Auth..
+        if (error) {
+            setErrorMessage('No se ha podido cambiar la contraseña.')
+            return
+        }
+
+        //Reset del form, cierra form y muestra mensaje de éxito.
+        form.reset()
+        setIsFormVisible(false)
+        setSuccessMessage('Contraseña actualizada correctamente.')
+    }
+
+    return (
+        <>
+            <h2>Seguridad</h2>
+            <p> 
+                Cambio de contraseña.
+            </p>
+
+            {!isFormVisible && (
+                <button
+                 type="button"
+                 className={styles.secondaryButton}
+                 onClick={() => setIsFormVisible(true)}
+                >
+                    Cambiar contraseña
+                </button>
+            )}
+
+            {isFormVisible && (
+                <form className={styles.passwordForm} onSubmit={handleChangePassword}>
+                    <AuthInput 
+                        id="password"
+                        label="Contraseña nueva"
+                        type="password"
+                        placeholder="*******"
+                    />
+
+                    <AuthInput
+                        id="confirmPassword"
+                        label="Repite la contraseña"
+                        type="password"
+                        placeholder="*******"
+                    />
+
+                    <div className={styles.passwordFormActions}>
+                        <PrimaryButton type="submit">
+                            Guardar contraseña nueva
+                        </PrimaryButton>
+
+                        <button
+                         type="button"
+                         className={styles.secondaryButton}
+                         onClick={() => {
+                            setIsFormVisible(false)
+                            setErrorMessage('')
+                        }}
+                        >
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            )}
+        
+            {/*Mensaje de error/éxito al cambiar la contraseña.*/}
+            {errorMessage && (
+                <p className={styles.errorMessage}>
+                    {errorMessage}
+                </p>
+            )}
+            {successMessage && (
+                <p className={styles.successMessage}>
+                    {successMessage}
+                </p>
+            )}
+        </>
+    )
+
+    {/*Mensaje de error/éxito al cambiar la contraseña.*/}
+    {errorMessage && (
+        <p className={styles.errorMessage}>
+            {errorMessage}
+        </p>
+    )}
+    {successMessage && (
+        <p className={styles.successMessage}>
+            {successMessage}
+        </p>
+    )}
 }
