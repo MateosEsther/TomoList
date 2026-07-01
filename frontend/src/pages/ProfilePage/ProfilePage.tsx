@@ -17,7 +17,6 @@ type ProfileFormProps = {
     refreshProfile: () => Promise<void>
 }
 
-
 function ProfilePage() {
     //Recoge los datos compartidos por ProfileProvider.
     const {
