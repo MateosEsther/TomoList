@@ -79,6 +79,10 @@
             border-color: var(--primary-600);
             box-shadow: 0 0 0 2px rgba(225, 29, 72, 0.35);
         }
+
+        &::spelling-error {
+            text-decoration-color: rgb(252, 165, 165);
+        }
     }
 
     textarea {

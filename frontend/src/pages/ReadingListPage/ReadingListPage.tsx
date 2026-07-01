@@ -15,6 +15,9 @@ import { Star } from 'lucide-react'
 //Valores posibles del modo vista. En grid con toda la información de las lecturas o en list con información reducida.
 type ViewMode = 'grid' | 'list'
 
+//Campo por el que se ordena la lista en Supabase.
+type SortOrder = 'created_at' | 'updated_at'
+
 //Define la forma que tendrá cada lectura traída de Supabase.
 type Reading = {
     id: string
@@ -36,6 +39,9 @@ function ReadingListPage() {
 
     //Guarda el modo vista seleccionado.
     const [viewMode, setViewMode] = useState<ViewMode>('grid')
+
+    //Guarda el criterio de ordenación de la lista.
+    const [sortOrder, setSortOrder] = useState<SortOrder>('created_at')
 
     //Guarda lecturas traídas de Supabase.
     const [readings, setReadings] = useState<Reading[]>([])
@@ -295,7 +301,7 @@ function ReadingListPage() {
                 `)
                 .eq('type', readingType)
                 .eq('status', readingStatus)
-                .order('created_at', { ascending: false })
+                .order(sortOrder, { ascending: false })
             
             //Si la página ya no está montada, no actualiza estados.
             if (!isMounted) {
@@ -322,7 +328,7 @@ function ReadingListPage() {
         return () => {
             isMounted = false
         }
-    },[currentFilter, readingStatus, readingType])
+    },[currentFilter, readingStatus, readingType, sortOrder])
 
     return (
         <div className={styles.readingListPage}>
@@ -367,6 +373,37 @@ function ReadingListPage() {
                             onClick={() => setViewMode('list')}
                         >
                             Lista
+                        </button>
+                    </div>
+                </section>
+
+                {/*Selector del criterio de ordenación.*/}
+                <section className={styles.viewToolbar}>
+                    <p>Ordenar por</p>
+
+                    <div>
+                        <button
+                            type="button"
+                            className={
+                                sortOrder === 'created_at'
+                                    ? `${styles.viewButton} ${styles.activeView}`
+                                    : styles.viewButton
+                            }
+                            onClick={() => setSortOrder('created_at')}
+                        >
+                            Añadidas recientemente
+                        </button>
+
+                        <button
+                            type="button"
+                            className={
+                                sortOrder === 'updated_at'
+                                    ? `${styles.viewButton} ${styles.activeView}`
+                                    : styles.viewButton
+                            }
+                            onClick={() => setSortOrder('updated_at')}
+                        >
+                            Modificadas recientemente
                         </button>
                     </div>
                 </section>

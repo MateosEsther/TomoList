@@ -6,6 +6,7 @@ import PrivateSidebar from '../../components/PrivateSidebar/PrivateSidebar';
 import styles from './AddTomePage.module.scss'
 import { supabase } from '../../lib/supabaseClient';
 import { useProfile } from '../../hooks/useProfile';
+import { formatTitle } from '../../utils/text';
 import { Star } from 'lucide-react'
 
 
@@ -48,8 +49,9 @@ function AddTomePage() {
         //Recoge los valores por los atributos "name" de los campos.
         const formData = new FormData(form)
 
-        //Limpia espacios innecesarios.
-        const title = String(formData.get('title') ?? '').trim()
+        //Limpia espacios y normaliza la capitalización del título.
+        const rawTitle = String(formData.get('title') ?? '').trim()
+        const title = formatTitle(rawTitle)
         const author = String(formData.get('author') ?? '').trim()
         const tomeType = String(formData.get('type') ?? '')
         const tomeStatus = String(formData.get('status') ?? '')
@@ -248,6 +250,7 @@ function AddTomePage() {
                                         id="review"
                                         name="review"
                                         placeholder="Escribe una reseña o nota personal sobre esta lectura."
+                                        spellCheck={true}
                                     />
                                 </div>
                             </section>
