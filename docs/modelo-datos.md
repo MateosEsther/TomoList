@@ -322,7 +322,7 @@ La base de datos guardará solo el identificador del avatar seleccionado.
 
 ---
 
-## 7. Avatares predefinidos
+## 7.Avatares predefinidos
 
 TomoList usará avatares predefinidos que vivirán en el frontend y sus imágenes estarán una carpeta
 pública del proyecto. Estructura orientativa:
@@ -347,6 +347,8 @@ TomoList usa Supabase Auth para gesrionar la utenticación y la sesión de usuar
 - iniciar/cerrar sesión
 - mantener la sesión activa
 - recuperar la contraseña
+- cambiar la contraseña desde el perfil
+
 
 Al iniciar sesión, Supabase Auth mantiene la sesión activa en el navegador y a partir de aquí, la app
 sabe si está autenticad@ o no y así consultar los datos asociados.
@@ -372,10 +374,52 @@ Al cerrar sesión, se pierde el acceso a las rutas privadas de TomoList.
 
 ---
 
-## 9.Recuperación de contraseña
+## 9.Gestión de contraseñas
 
-TomoList usa Supabase Auth para gestionar la recuperación de contraseñas. Este flujo se inicia desde `ForgotPasswordPage`.
-User introduce su email y Supabase Auth se encarga de enviar las instrucciones de recuperación de contraseña.
+En TomoList los datos `email` y `contraseña` viven Supabase Auth en lugar de ser datos de la tabla `profiles`. Hay dos formas de gestionar las contraseñas en TomoList:
+- recuperar la contraseña cuando se ha olvidado desde la vista del login.
+- cambiar la contraseña actual por una nueva desde Mi perfil una vez iniciada la sesión.
 
+## 9.1.Recuperación de contraseña olvidada.
+
+Rutas: /forgot-password, /reset-password
+Páginas: ForgotPasswordPage, ResetPasswordPage
+APIs: resetPasswordForEmail, updateUser
+
+```mermaid
+flowchart TD
+    A[Login: olvidé contraseña] --> B[/forgot-password]
+    B --> C[Usuario escribe email]
+    C --> D[resetPasswordForEmail]
+    D --> E[Email con enlace]
+    E --> F[/reset-password]
+    F --> G[Contraseña nueva + confirmación]
+    G --> H[updateUser]
+    H --> I[Login /]
 ```
+
+Regla de UX: el mensaje tras pedir el email no revela si la cuenta existe o no (seguridad).
+
+## 9.2.Cambio de contraseña desde el perfil.
+
+Se realiza con sesión activa desde la vista mi perfil.
+Rutas: /perfil
+Páginas: ProfilePage, componente ChangePasswordForm
+APIs: updateUser
+
+```mermaid
+flowchart TD
+    A[Usuario en /perfil con sesión] --> B[Clic en Cambiar contraseña]
+    B --> C[Contraseña nueva + confirmación]
+    C --> D[Validación: campos y coincidencia]
+    D --> E[updateUser]
+    E --> F[Cierra formulario + mensaje de éxito]
+    C --> G[Cancelar]
+    G --> B
+```
+
+Regla de UX: tras guardar bien, el form se cierra y el mensaje de éxito desaparece a los 3 segundos.
+
 ---
+
+
