@@ -9,6 +9,7 @@ import PrivateSidebar from '../../components/PrivateSidebar/PrivateSidebar';
 import styles from './ReadingListPage.module.scss'
 import { supabase } from '../../lib/supabaseClient';
 import { formatTitle, formatAuthor } from '../../utils/text';
+import { formatReadMonth } from '../../utils/dates';
 import { Star } from 'lucide-react'
 
 
@@ -480,7 +481,7 @@ function ReadingListPage() {
 
                                                 {reading.readMonth && (
                                                     <span>
-                                                        Leído en {reading.readMonth}
+                                                        Leído en {formatReadMonth(reading.readMonth)}
                                                     </span>
                                                 )}
 
@@ -502,7 +503,7 @@ function ReadingListPage() {
                                     {/*En vista lista solo cargará la fecha si existe.*/}
                                     {viewMode === 'list' && reading.readMonth && (
                                         <p className={styles.listDate}>
-                                            Leído en {reading.readMonth}
+                                            Leído en {formatReadMonth(reading.readMonth)}
                                         </p>
                                     )}
                                 </div>
