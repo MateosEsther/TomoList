@@ -9,8 +9,7 @@ TomoList es una app web de gestión personal de lecturas, en la que el usuario p
 literatura, clasificarlas como pendientes o leídas, y registrar información personal como valoración, reseña y 
 mes aproximado de lectura.
 
-La aplicación también consulta APIs externas, cuando estén disponibles, con fines de enriquecimiento 
-aportando la sinopsis y la portada.
+La aplicación también consulta APIs externas, cuando estén disponibles, con fines de enriquecimiento aportando título, autora/o, sinopsis y portada con la elección del resultado del catálogo por user autenticado.
 
 ---
 
@@ -53,26 +52,26 @@ type Tome = {
 ### DATOS INTRODUCIDOS POR USER
 
 ```txt
-title
-author
 type
 status
 readMonth
 rating
 review
 ```
-
+User introduce title y author para buscar en la API o como texto libre si no hay resultados; la API corrige ortografía cuando user elige un resultado del catálogo.
 La introducción de los datos principales de la lectura es manual mediante el formulario. 
 Si la lectura está marcada como leída, se desplegarán datos adicionales a introducir: `rating` será obligatorio
  y `review` y `readMonth` opcionales.
 
 ### DATOS OBTENIDOS DESDE APIs EXTERNAS
 ```txt
+title
+author
 coverUrl
 synopsis
 ```
 
-Si las APIs no devuelven portada o sinopsis, la lectura se guarda igualmente.
+Si las APIs no devuelven título y/o autora/o, se guardan con el dato introducido manualmente. Si la portada y la sinopsis, no están en la API,  la lectura se guarda igualmente.
 
 ### DATOS GENERADOS POR EL SISTEMA
 ```txt
@@ -144,33 +143,33 @@ YYYY-MM
 erDiagram
     PROFILE ||--o{ TOME : owns
 
-    PROFILE {
-        uuid id
-        string name
-        string surname
-        string display_name
-        string avatar_id
-        datetime created_at
-        datetime updated_at
-    }
+        PROFILE {
+            uuid id
+            string name
+            string surname
+            string display_name
+            string avatar_id
+            datetime created_at
+            datetime updated_at
+        }
 
-    TOME {
-        number id
-        uuid user_id
-        string title
-        string title_normalized
-        string author
-        string author_normalized
-        string type
-        string status
-        string coverUrl
-        string synopsis
-        string read_month
-        number rating
-        string review
-        datetime created_at
-        datetime updated_at
-    }
+        TOME {
+            number id
+            uuid user_id
+            string title
+            string title_normalized
+            string author
+            string author_normalized
+            string type
+            string status
+            string coverUrl
+            string synopsis
+            string read_month
+            number rating
+            string review
+            datetime created_at
+            datetime updated_at
+        }
 ```
 
 Este diagrama representa la relación principal del sistema:
@@ -207,7 +206,7 @@ Si un Tome pasa de read a pending, se eliminan rating, review y readMonth previo
 
 ```mermaid
 flowchart TD
-    A[Usuario entra en Añadir tomo] --> B[Introduce título y autor]
+    A[Usuario entra en Añadir lectura] --> B[Escribe título y autor o busca en catálogo]
     B --> C[Selecciona tipo: manga o literatura]
     C --> D[Selecciona estado]
 
@@ -216,22 +215,30 @@ flowchart TD
 
     F --> G[Usuario introduce rating obligatorio]
     G --> H[Usuario puede añadir review y read_month]
-    H --> I[Guardar lectura]
+    H --> I[Consultar APIs externas]
 
-    E --> I[Guardar lectura]
+    E --> I
 
-    I --> J{¿Ya existe ese Tome para el usuario?}
-    J -->|Sí| K[Mostrar error: lectura ya guardada]
-    J -->|No| L[Consultar APIs externas]
+    I --> J{¿Hay resultados en la API?}
 
-    L --> M{¿Las APIs devuelven portada o sinopsis?}
-    M -->|Sí| N[Guardar Tome con datos enriquecidos]
-    M -->|No| O[Guardar Tome sin portada o sin sinopsis]
+    J -->|Sí| K[Mostrar lista de resultados]
+    K --> L{¿El usuario elige un resultado?}
 
-    N --> P[Mostrar Tome en su lista correspondiente]
-    O --> P
+    L -->|Sí| M[Usar title, author, coverUrl y synopsis del resultado]
+    L -->|No| N[Usar título y autor escritos por el usuario]
+
+    J -->|No| N
+
+    M --> O{¿Ya existe esa lectura para el usuario?}
+    N --> O
+
+    O -->|Sí| P[Mostrar error: lectura ya guardada]
+    O -->|No| Q[Guardar lectura en Supabase]
+
+    Q --> R[Mostrar lectura en su lista correspondiente]
+
 ```
-
+Si user elige un resultado de la API, se guardan título, autor, portada y sinopsis del catálogo. Si no hay resultados, no elige ninguno o prefiere no usar el catálogo, se guardan el título y el autor que escribió (con formatTitle como respaldo). Si faltan portada o sinopsis, la lectura se guarda igualmente con esos campos vacíos.
 ---
 
 ## 5.Flujo de cambio de estado
