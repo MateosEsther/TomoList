@@ -8,6 +8,7 @@ import { Link } from 'react-router'
 import styles from './MyListsPage.module.scss'
 import PrivateSidebar from '../../components/PrivateSidebar/PrivateSidebar'
 import { formatTitle, formatAuthor } from '../../utils/text'
+import { formatLastUpdated } from '../../utils/dates'
 import { supabase } from '../../lib/supabaseClient'
 
 //Datos de lectura recogidos de Supabase para la info de conteos, filtros...
@@ -17,6 +18,7 @@ type ReadingItem = {
     author: string
     type: 'manga' | 'literature'
     status: 'pending' | 'read'
+    updatedAt: string
 }
 
 //Reprensentación de todos los conteos posibles.
@@ -28,6 +30,10 @@ type ReadingCounts = {
     mangaRead: number
     literaturePending: number
     literatureRead: number
+    mangaPendingLastUpdated: string | null
+    mangaReadLastUpdated: string | null
+    literaturePendingLastUpdated: string | null
+    literatureReadLastUpdated: string | null
 }
 
 //Estado inicial de los conteos. Fuera del componente para reuutilizarlo en caso de error.
@@ -39,6 +45,10 @@ const initialReadingCounts: ReadingCounts = {
     mangaRead: 0,
     literaturePending: 0,
     literatureRead: 0,
+    mangaPendingLastUpdated: null,
+    mangaReadLastUpdated: null,
+    literaturePendingLastUpdated: null,
+    literatureReadLastUpdated: null,
 }
 
 function MyListsPage() {
@@ -81,10 +91,11 @@ function MyListsPage() {
                     title,
                     author,
                     type,
-                    status
+                    status,
+                    updatedAt:updated_at
                 `)
-            
-            //Si el componente no está montado, no actualiza
+
+            //Si el componente no está montado, no actualiza.
             if (!isMounted) {
                 return
             }
@@ -117,23 +128,53 @@ function MyListsPage() {
                     accumulator.read += 1
                 }
 
-                //Conteo por tipo y estado.
+                //Conteo por tipo, estado y fecha más reciente.
                 if (reading.type === 'manga' && reading.status === 'pending') {
                     accumulator.mangaPending += 1
+
+                    if (
+                        !accumulator.mangaPendingLastUpdated
+                        || reading.updatedAt > accumulator.mangaPendingLastUpdated
+                    ) {
+                        accumulator.mangaPendingLastUpdated = reading.updatedAt
+                    }
                 }
+
                 if (reading.type === 'manga' && reading.status === 'read') {
                     accumulator.mangaRead += 1
+
+                    if (
+                        !accumulator.mangaReadLastUpdated
+                        || reading.updatedAt > accumulator.mangaReadLastUpdated
+                    ) {
+                        accumulator.mangaReadLastUpdated = reading.updatedAt
+                    }
                 }
 
                 if (reading.type === 'literature' && reading.status === 'pending') {
                     accumulator.literaturePending += 1
+
+                    if (
+                        !accumulator.literaturePendingLastUpdated
+                        || reading.updatedAt > accumulator.literaturePendingLastUpdated
+                    ) {
+                        accumulator.literaturePendingLastUpdated = reading.updatedAt
+                    }
                 }
+
                 if (reading.type === 'literature' && reading.status === 'read') {
                     accumulator.literatureRead += 1
+
+                    if (
+                        !accumulator.literatureReadLastUpdated
+                        || reading.updatedAt > accumulator.literatureReadLastUpdated
+                    ) {
+                        accumulator.literatureReadLastUpdated = reading.updatedAt
+                    }
                 }
 
                 return accumulator
-            }, { ...initialReadingCounts})
+            }, { ...initialReadingCounts })
 
             //Guarda lecturas completas para filtrarlas en la interfaz.
             setReadings(loadedReadings)
@@ -145,7 +186,7 @@ function MyListsPage() {
             setCountsErrorMessage('')
 
             //Termina la carga.
-            setIsLoadingCounts(false)            
+            setIsLoadingCounts(false)
         }
 
         void loadReadingCounts()
@@ -234,12 +275,18 @@ function MyListsPage() {
                         <p>Lecturas de manga por empezar o continuar.</p>
 
                         <strong className={styles.cardCount}>
-                            {isLoadingCounts ? 'Cargando...' : `${readingCounts.mangaPending} lecturas`}
+                            {isLoadingCounts 
+                                ? 'Cargando...' 
+                                : `${readingCounts.mangaPending} lecturas`
+                            }
                         </strong>
 
                         <span className={styles.dateInfo}>
                             <CalendarDays aria-hidden="true" />
-                            Última actualización pendiente
+                            {isLoadingCounts 
+                                ? 'Cargando...'
+                                : `Última actualización: ${formatLastUpdated(readingCounts.mangaPendingLastUpdated)}`
+                            }
                         </span>
                     </Link>
 
@@ -250,12 +297,18 @@ function MyListsPage() {
                         <p>Libros guardados para leer más adelante.</p>
 
                         <strong className={styles.cardCount}>
-                            {isLoadingCounts ? 'Cargando...' : `${readingCounts.literaturePending} lecturas`}
+                            {isLoadingCounts 
+                                ? 'Cargando...' 
+                                : `${readingCounts.literaturePending} lecturas`
+                            }
                         </strong>
 
                         <span className={styles.dateInfo}>
                             <CalendarDays aria-hidden="true" />
-                            Última actualización pendiente
+                            {isLoadingCounts 
+                                ? 'Cargando...' 
+                                : `Última actualización: ${formatLastUpdated(readingCounts.literaturePendingLastUpdated)}`
+                            }
                         </span>
                     </Link>
 
@@ -266,12 +319,18 @@ function MyListsPage() {
                         <p>Mangas terminados, valoraciones y reseñas guardadas.</p>
 
                         <strong className={styles.cardCount}>
-                            {isLoadingCounts ? 'Cargando...' : `${readingCounts.mangaRead} lecturas`}
+                            {isLoadingCounts
+                                ? 'Cargando...'
+                                : `${readingCounts.mangaRead} lecturas` 
+                            }
                         </strong>
 
                         <span className={styles.dateInfo}>
                             <CalendarDays aria-hidden="true" />
-                            Información de lectura disponible en cada registro
+                            {isLoadingCounts
+                                ? 'Cargando...'
+                                : `Última actualización: ${formatLastUpdated(readingCounts.mangaReadLastUpdated)}`
+                            }
                         </span>
                     </Link>
 
@@ -282,12 +341,18 @@ function MyListsPage() {
                         <p>Libros terminados con fecha, valoración y comentario.</p>
 
                         <strong className={styles.cardCount}>
-                            {isLoadingCounts ? 'Cargando...' : `${readingCounts.literatureRead} lecturas`}
+                            {isLoadingCounts
+                                ? 'Cargando...' 
+                                : `${readingCounts.literatureRead} lecturas`
+                            }
                         </strong>
 
                         <span className={styles.dateInfo}>
                             <CalendarDays aria-hidden="true" />
-                            Información de lectura disponible en cada registro
+                            {isLoadingCounts
+                                ? 'Cargando...' 
+                                : `Última actualización: ${formatLastUpdated(readingCounts.literatureReadLastUpdated)}`
+                            }
                         </span>
                     </Link>
                 </section>
