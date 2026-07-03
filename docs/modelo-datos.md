@@ -429,4 +429,46 @@ Regla de UX: tras guardar bien, el form se cierra y el mensaje de éxito desapar
 
 ---
 
+## 10.APIs externas de enriquecimiento
 
+TomoList consulta una API distinta según el `type` de la lectura. El usuario escribe título y autor (o solo título) para buscar en el catálogo; si elige un resultado, se guardan los datos que devuelve la API. Si no hay resultados o prefiere no elegir ninguno, se guarda lo que escribió manualmente.
+
+### 10.1.API por tipo de lectura
+
+| type | API | Protocolo |
+|------|-----|-----------|
+| `literature` | Google Books | REST |
+| `manga` | AniList | GraphQL |
+
+### 10.2.Google Books (literatura)
+
+- **Documentación:** https://developers.google.com/books
+- **Búsqueda:** `GET https://www.googleapis.com/books/v1/volumes?q={consulta}&key={API_KEY}`
+- **API key:** obligatoria. Se guarda en `.env` como `VITE_GOOGLE_BOOKS_API_KEY` y no se sube al repositorio.
+- **Campos que se mapean a `Tome`:**
+```txt
+title       ← volumeInfo.title
+author      ← volumeInfo.authors (unidos si hay varios)
+coverUrl    ← volumeInfo.imageLinks.thumbnail (si existe)
+synopsis    ← volumeInfo.description (si existe)
+```
+
+### 10.3.AniList (manga)
+- **Documentación:** https://anilist.gitbook.io/anilist-apidaniel/
+- **Endpoint:** POST https://graphql.anilist.co
+- **API key:** no requiere clave, se identifica la app en el header si AniList lo pide.
+- **Campos que se mapean a `Tome`:**
+```txt
+title       ← Media.title o title.romaji / title.english (priorizar español/inglés si existe)
+author      ← staff edges con rol Story & Art o autor principal
+coverUrl    ← coverImage.large o coverImage.medium
+synopsis    ← description (puede venir en HTML; limpiar al guardar)
+```
+
+### 10.4.Reglas de uso
+
+1.La consulta a la API se hace desde `AddTomePage` antes de guardar en Supabase.
+2.Si la API no devuelve `title` o `author`, se usan los introducidos manualmente.
+3.Si faltan `portada` o `sinopsis`, la lectura se guarda con esos campos en null.
+4.No se persiste la respuesta cruda de la API en la base de datos; solo los campos de `Tome`.
+5.El usuario puede guardar sin elegir resultado del catálogo (fallback manual con `formatTitle`).
