@@ -163,6 +163,89 @@
     font-size: 0.9rem;
 }
 
+.catalogSearch {
+    display: grid;
+    gap: var(--spacing-sm);
+}
+
+.catalogSearchButton {
+    justify-self: start;
+    padding: 0.55rem 0.85rem;
+    border: 1px solid var(--primary-600);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text-main);
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+        background: rgba(225, 29, 72, 0.12);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+.catalogResults {
+    display: grid;
+    gap: var(--spacing-sm);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.catalogSynopsis {
+    margin: 0;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.catalogResultItem {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--spacing-sm);
+    align-items: center;
+    width: 100%;
+    padding: 0.65rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: rgba(2, 6, 23, 0.35);
+    color: var(--text-main);
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+
+    &:hover {
+        border-color: var(--primary-600);
+    }
+}
+
+.catalogResultItemSelected {
+    border-color: var(--primary-600);
+    box-shadow: 0 0 0 2px rgba(225, 29, 72, 0.35);
+}
+
+.catalogResultCover {
+    width: 48px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.catalogResultText {
+    display: grid;
+    gap: 0.25rem;
+
+    span {
+        color: var(--text-dim);
+        font-size: 0.9rem;
+    }
+}
+
 /*Tablet: campos en dos columnas.*/
 @media (min-width: 700px) {
     .formGrid {

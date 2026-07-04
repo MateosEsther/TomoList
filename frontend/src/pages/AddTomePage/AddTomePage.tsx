@@ -6,9 +6,10 @@ import PrivateSidebar from '../../components/PrivateSidebar/PrivateSidebar';
 import styles from './AddTomePage.module.scss'
 import { supabase } from '../../lib/supabaseClient';
 import { useProfile } from '../../hooks/useProfile';
-import { formatTitle } from '../../utils/text';
+import { formatTitle, formatAuthor } from '../../utils/text';
 import { Star } from 'lucide-react'
-
+import { searchGoogleBooks } from '../../services/searchGoogleBooks';
+import type { GoogleBookResult } from '../../services/searchGoogleBooks';
 
 function AddTomePage() {
     //Guardar el estado seleccionado o vacío si todavía no ha elegido nada.
@@ -24,9 +25,95 @@ function AddTomePage() {
     const [errorMessage, setErrorMessage] = useState('')
     const [successMessage, setSuccessMessage] = useState('')
 
+    //Guarda los resultados de la búsquedas en las APIs.
+    const [searchResults, setSearchResults] = useState<GoogleBookResult[]>([])
+    //True mientras espera la respuesta de las APIs.
+    const [isSearching, setIsSearching] = useState(false)
+    //Errores de búsqieda (validaciones, API o sin resultados)..
+    const [searchErrorMessage, setSearchErrorMessage] = useState('')
+    //Resultado del catálogo de las búsquedas elegible antes de guardar.
+    const [selectedBook, setSelectedBook] = useState<GoogleBookResult | null>(null)
+
     //Para saber cuándo mostrar los campos adicionales en estado leída. 
     //Si selecciona read, isRead vale true, si no, vale false.
     const isRead = readingStatus === 'read'
+
+
+    //Busca en el catálogo según el tipo: Google Books (literatura) o AniList (manga, pendiente).
+    async function handleSearch() {
+        setSearchErrorMessage('')
+        setSearchResults([])
+        setSelectedBook(null)
+
+        const form = document.querySelector('form') as HTMLFormElement | null
+        if (!form) {
+            return
+        }
+
+        const formData = new FormData(form)
+        const title = String(formData.get('title') ?? '').trim()
+        const author = String(formData.get('author') ?? '').trim()
+        const tomeType = String(formData.get('type') ?? '')
+
+        if (!tomeType) {
+            setSearchErrorMessage('Selecciona un tipo de lectura antes de buscar.')
+            return
+        }
+
+        if (!title && !author) {
+            setSearchErrorMessage('Escribe título o autora/o para buscar.')
+            return
+        }
+
+        const query = [title, author].filter(Boolean).join(' ')
+
+        setIsSearching(true)
+
+        try {
+            let results: GoogleBookResult[] = []
+
+            //Según el tipo elegido, busca en la API correspondiente.
+            if (tomeType === 'literature') {
+                results = await searchGoogleBooks(query)
+            } else if (tomeType === 'manga') {
+                setSearchErrorMessage('La búsqueda de manga estará disponible al integrar AniList.')
+                return
+            }
+
+            setSearchResults(results)
+
+            if (results.length === 0) {
+                setSearchErrorMessage('No se encontraron resultados. Puedes guardar la lectura manualmente.')
+            }
+
+        } catch {
+            setSearchErrorMessage('No se ha podido buscar en el catálogo.')
+        } finally {
+            setIsSearching(false)
+        }
+    }
+
+    //selectedBook guarda el resultado del catálogo elegido y rellena los campos con el formato de la app.
+    function handleSelectedBook(book: GoogleBookResult) {
+        setSelectedBook(book)
+
+        const form = document.querySelector('form') as HTMLFormElement | null
+        if(!form) {
+            return
+        }
+
+        //Busca los inputs de title y author del form.
+        const titleInput = form.elements.namedItem('title') as HTMLInputElement | null
+        const authorInput = form.elements.namedItem('author') as HTMLInputElement | null
+
+        if(titleInput) {
+            titleInput.value = formatTitle(book.title)
+        }
+        if(authorInput) {
+            authorInput.value = formatAuthor(book.author)
+        }
+    }
+
 
     //Guarda una obra nueva en Supabase.
     async function handleAddTome(event: React.FormEvent<HTMLFormElement>) {
@@ -94,6 +181,9 @@ function AddTomePage() {
                 review: tomeStatus === 'read' && reviewValue
                     ? reviewValue
                     : null,
+                //Datos del catálogo si se seleccionó un resultado, si no, null.
+                cover_url: selectedBook?.coverUrl ?? null,
+                synopsis: selectedBook?.synopsis ?? null,
             })
         
         //Si Supabase devuelve error, informa al user.
@@ -114,6 +204,9 @@ function AddTomePage() {
         form.reset()
         setReadingStatus('')
         setRating(0)
+        setSearchResults([])
+        setSelectedBook(null)
+        setSearchErrorMessage('')
 
         //Informa al usuario.
         setSuccessMessage('Lectura guardada correctamente. Puedes verla en tu biblioteca.')
@@ -198,6 +291,74 @@ function AddTomePage() {
                                     <option value="read">Leída</option>
                                 </select>
                             </div>
+                        </div>
+                        
+                        {/*Búsqueda en catálgo externo (APIs).*/}
+                        <div className={styles.catalogSearch}>
+                            {/*Llama al handleSearch() con title, author y type del fomr.*/}
+                            <button 
+                                type="button"
+                                className={styles.catalogSearchButton}
+                                onClick={() => void handleSearch()}
+                                disabled={isSearching}
+                            >
+                                {isSearching ? 'Buscando...' : 'Buscar en catálogo'}
+                            </button>
+
+                            {/*Validaciones, errores de API o sin resultados.*/}
+                            {searchErrorMessage && (
+                                <p className={styles.errorMessage} role="status">
+                                    {searchErrorMessage}
+                                </p>
+                            )}
+
+                            {/*Lista de resultados del catálogo, solo si searchResults tiene datos.*/}
+                            {searchResults.length > 0 && (
+                                <ul className={styles.catalogResults}>
+                                    {searchResults.map((book) =>{
+                                        //Compara title y author para resaltar la obra seleccionada.
+                                        const isSelected =
+                                            selectedBook?.title === book.title
+                                            && selectedBook?.author === book.author
+
+                                        return (
+                                            <li key={`${book.title}-${book.author}`}>
+                                                {/*Evita enviar el form al elegir.*/}
+                                                <button
+                                                    type="button"
+                                                    className={
+                                                        isSelected
+                                                            ? `${styles.catalogResultItem} ${styles.catalogResultItemSelected}`
+                                                            : styles.catalogResultItem
+                                                    }
+                                                    onClick={() => handleSelectedBook(book)}
+                                                >
+                                                    {/*Opcional porque no todas se pueden traer de las APIs.*/}
+                                                    {book.coverUrl && (
+                                                        <img
+                                                            src={book.coverUrl}
+                                                            alt=""
+                                                            className={styles.catalogResultCover}
+                                                        />
+                                                    )}
+
+                                                    <span className={styles.catalogResultText}>
+                                                        <strong>{book.title}</strong>
+                                                        <span>{book.author}</span>
+                                                    </span>
+                                                </button>
+                                            </li>
+                                        )
+                                    })}
+                                </ul>
+                            )}
+
+                            {/*Vista previa de la sinopsis de la obra seleccionada.*/}
+                            {selectedBook && (
+                                <p className={styles.catalogSynopsis}>
+                                    {selectedBook.synopsis}
+                                </p>
+                            )}
                         </div>
 
                         {/*Se muestran solo con estado "leída".*/}
