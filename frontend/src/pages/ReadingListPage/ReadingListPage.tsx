@@ -532,9 +532,13 @@ function ReadingListPage() {
                                                 )}
                                             </div>
 
-                                                <p className={styles.review}>
-                                                    {reading.review || ''}
-                                                </p>
+                                                {reading.status === 'read' ? (
+                                                    <p className={styles.review}>
+                                                        {reading.review || ''}
+                                                    </p>   
+                                                ) : (
+                                                    <hr className={styles.cardDivider} />
+                                                )}
                                         </>
                                     )}
 

@@ -9,6 +9,7 @@ import { useProfile } from '../../hooks/useProfile';
 import { formatTitle, formatAuthor, stripHTML } from '../../utils/text';
 import { Star } from 'lucide-react'
 import { searchGoogleBooks } from '../../services/searchGoogleBooks';
+import { searchAniList } from '../../services/searchAniList';
 import type { GoogleBookResult } from '../../services/searchGoogleBooks';
 
 function AddTomePage() {
@@ -39,7 +40,7 @@ function AddTomePage() {
     const isRead = readingStatus === 'read'
 
 
-    //Busca en el catálogo según el tipo: Google Books (literatura) o AniList (manga, pendiente).
+    //Busca en el catálogo según el tipo: Google Books (literatura) o AniList (mangas).
     async function handleSearch() {
         setSearchErrorMessage('')
         setSearchResults([])
@@ -76,8 +77,7 @@ function AddTomePage() {
             if (tomeType === 'literature') {
                 results = await searchGoogleBooks(query)
             } else if (tomeType === 'manga') {
-                setSearchErrorMessage('La búsqueda de manga estará disponible al integrar AniList.')
-                return
+                results = await searchAniList(query)
             }
 
             setSearchResults(results)

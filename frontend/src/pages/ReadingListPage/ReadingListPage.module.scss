@@ -274,9 +274,11 @@
     font-style: italic;
 }
 
-/*Si no hay review, oculta la línea superior que la separa del resto de info.*/
-.review:empty {
-    border-top-color: transparent;
+/*En pendientes: línea entre tags y botones.*/
+.cardDivider {
+    margin: 0;
+    border: none;
+    border-top: 1px solid var(--border);
 }
 
 /*Botón para abrir la edición de una lectura.*/

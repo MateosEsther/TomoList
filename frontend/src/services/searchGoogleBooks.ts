@@ -67,7 +67,7 @@ export async function searchGoogleBooks(query: string): Promise<GoogleBookResult
                 title: volumeInfo.title,
                 //Array -> join para unir los autores.
                 //Si no hay autores, devuelve 'Autor desconocido'.
-                author: volumeInfo.authors?.join(', ') ?? 'Autor desconocido',
+                author: volumeInfo.authors?.join(', ') ?? 'Autora/o desconocida/o',
                 coverUrl: volumeInfo.imageLinks?.thumbnail ?? null,
                 synopsis: volumeInfo.description ?? null,
             }

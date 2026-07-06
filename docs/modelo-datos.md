@@ -472,3 +472,19 @@ synopsis    ← description (puede venir en HTML; limpiar al guardar)
 3.Si faltan `portada` o `sinopsis`, la lectura se guarda con esos campos en null.
 4.No se persiste la respuesta cruda de la API en la base de datos; solo los campos de `Tome`.
 5.El usuario puede guardar sin elegir resultado del catálogo (fallback manual con `formatTitle`).
+
+### 10.5.Pendientes de documentación
+
+Ampliar las secciones de cada API cuando la integración esté cerrada y probada en navegador:
+
+**§10.2 Google Books** — añadir:
+
+- **Implementación:** `frontend/src/services/searchGoogleBooks.ts`
+- **Búsqueda usada:** `GET volumes` con `q`, `maxResults: 5`, `langRestrict: es`
+- **Referencia:** https://developers.google.com/books/docs/v1/reference/volumes/list
+
+**§10.3 AniList** — añadir:
+
+- **Implementación:** `frontend/src/services/searchAniList.ts`
+- **Query usada:** `Page` → `media(search, type: MANGA)` con `perPage: 5`
+- **Playground:** https://anilist.github.io/AniList-API-GraphQL-Playground/
