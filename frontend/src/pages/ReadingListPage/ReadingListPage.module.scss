@@ -84,6 +84,35 @@
 .readingGrid {
     display: grid;
     gap: var(--spacing-md);
+
+    .readingInfo {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    /*Título: máximo 2 líneas en las tarjetas.*/
+    .readingInfo h2 {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        min-height: 2.6em;
+    }
+
+    /*Si el título es demásiado largo.*/
+    .author {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+    }
+
+    /*Reserva espacio para los tags de las lecturas.*/
+    .metaInfo {
+        margin-top: auto;
+        min-height: 2rem;
+    }
 }
 
 /* Vista de lista.*/
@@ -114,6 +143,7 @@
 
 /*Card base por lectura.*/
 .readingCard {
+    overflow: hidden;
     display: grid;
     gap: var(--spacing-md);
     padding: var(--spacing-md);
@@ -121,6 +151,16 @@
     border-radius: var(--radius-lg);
     background: var(--surface-dark);
     box-shadow: var(--shadow-sm);
+}
+
+/*En vista tarjetas: misma altura por fila y botnoes debajo.*/
+.readingGrid .readingCard {
+    height: 100%;
+    grid-template-rows: auto 1fr auto;
+}
+
+.readingGrid .readingActions {
+    align-self: end;
 }
 
 /*Caja visual para portada o placeholder.*/
@@ -169,8 +209,41 @@
 }
 
 .synopsis {
+    min-height: 6em;
     margin: 0;
     color: var(--text-dim);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+}
+
+.synopsisBlock {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.synopsisExpanded {
+    margin: 0;
+    color: var(--text-dim);
+    line-height: 1.5;
+}
+
+.synopsisToggle {
+    justify-self: start;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--primary-600);
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: underline;
+
+    &:hover {
+        color: var(--primary-700);
+    }
 }
 
 .metaInfo {
@@ -189,11 +262,21 @@
 }
 
 .review {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    min-height: 4.5em;
     margin: 0;
     padding-top: var(--spacing-sm);
     border-top: 1px solid var(--border);
     color: var(--text-main);
     font-style: italic;
+}
+
+/*Si no hay review, oculta la línea superior que la separa del resto de info.*/
+.review:empty {
+    border-top-color: transparent;
 }
 
 /*Botón para abrir la edición de una lectura.*/

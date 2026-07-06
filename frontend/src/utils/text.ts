@@ -16,3 +16,8 @@ export function formatAuthor(author: string) {
             (firstLetter) => firstLetter.toUpperCase()
         )
 }
+
+//Limpia el HTML de un texto.
+export function stripHTML(text: string) {
+    return text.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
+}

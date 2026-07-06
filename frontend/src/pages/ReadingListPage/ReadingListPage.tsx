@@ -8,7 +8,7 @@ import { useParams } from 'react-router';
 import PrivateSidebar from '../../components/PrivateSidebar/PrivateSidebar';
 import styles from './ReadingListPage.module.scss'
 import { supabase } from '../../lib/supabaseClient';
-import { formatTitle, formatAuthor } from '../../utils/text';
+import { formatAuthor } from '../../utils/text';
 import { formatReadMonth } from '../../utils/dates';
 import { Star } from 'lucide-react'
 
@@ -83,6 +83,9 @@ function ReadingListPage() {
     //Guarda mensaje de éxito el eliminar.
     const [deleteSuccessMessage, setDeleteSuccessMessage] = useState('')
     
+    //Id de la lectura para sinopsis desplegada; null si no hay niguna.
+    const [expandedSynopsisId, setExpandedSynopsisId] = useState<string | null>(null)
+    
     //Convierte el tipo recibido por URL al valor interno usado por las lecturas.
     const readingType = type === 'manga' ? 'manga' : 'literature'
     //Convierte el estado recibido por la URL al valor interno usado por las lecturas.
@@ -124,6 +127,13 @@ function ReadingListPage() {
         setSelectedReading(null)
         setEditErrorMessage('')
         setShowPendingConfirmation(false)
+    }
+
+    //Abre y cierra la sinopsis para poder verla completa.
+    function toggleSynopsis(readingId: string) {
+        setExpandedSynopsisId((currentId) => {
+            return currentId === readingId ? null : readingId
+        })
     }
 
     //Guarda los cambios sobre una lectura previa.
@@ -457,7 +467,7 @@ function ReadingListPage() {
                                 )}
 
                                 <div className={styles.readingInfo}>
-                                    <h2>{formatTitle(reading.title)}</h2>
+                                    <h2>{reading.title}</h2>
 
                                     <p className={styles.author}>
                                         {formatAuthor(reading.author)}
@@ -466,9 +476,39 @@ function ReadingListPage() {
                                     {/*Información completa para la vista tarjeta.*/}
                                     {viewMode === 'grid' && (
                                         <>
-                                            <p className={styles.synopsis}>
-                                                {reading.synopsis || 'Sin sinopsis disponible.'}
-                                            </p>
+                                            {(() => {
+                                                const synopsisText = 
+                                                    reading.synopsis || 'Sin sinopsis disponible.'
+                                                const hasSynopsis = Boolean(reading.synopsis)
+                                                const isSynopsisExpanded = 
+                                                    expandedSynopsisId === reading.id
+
+                                                return (
+                                                    <div className={styles.synopsisBlock}>
+                                                        <p
+                                                            className={
+                                                                isSynopsisExpanded
+                                                                    ? styles.synopsisExpanded
+                                                                    : styles.synopsis
+                                                            }
+                                                        >
+                                                            {synopsisText}
+                                                        </p>
+                                                        
+                                                        {hasSynopsis && (
+                                                            <button
+                                                                type="button"
+                                                                className={styles.synopsisToggle}
+                                                                onClick={() => toggleSynopsis(reading.id)}
+                                                            >
+                                                                {isSynopsisExpanded
+                                                                    ? 'Ver menos'
+                                                                    : 'Leer más'}
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                )
+                                            })()}
 
                                             <div className={styles.metaInfo}>
                                                 <span>
@@ -492,11 +532,9 @@ function ReadingListPage() {
                                                 )}
                                             </div>
 
-                                            {reading.review && (
                                                 <p className={styles.review}>
-                                                    {reading.review}
+                                                    {reading.review || ''}
                                                 </p>
-                                            )}
                                         </>
                                     )}
 
@@ -546,7 +584,7 @@ function ReadingListPage() {
                             </h2>
 
                             <p className={styles.modalReadingTitle}>
-                                {formatTitle(selectedReading.title)}
+                                {selectedReading.title}
                             </p>
 
                             {/*Estado editable de la lectura.*/}
@@ -700,7 +738,7 @@ function ReadingListPage() {
                                 ¿Seguro que quieres eliminar 
                                 {' '}
                                 <strong>
-                                    {formatTitle(readingToDelete.title)}
+                                    {readingToDelete.title}
                                 </strong>
                                 {' '}
                                 de tu biblioteca?

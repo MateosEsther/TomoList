@@ -6,7 +6,7 @@ import PrivateSidebar from '../../components/PrivateSidebar/PrivateSidebar';
 import styles from './AddTomePage.module.scss'
 import { supabase } from '../../lib/supabaseClient';
 import { useProfile } from '../../hooks/useProfile';
-import { formatTitle, formatAuthor } from '../../utils/text';
+import { formatTitle, formatAuthor, stripHTML } from '../../utils/text';
 import { Star } from 'lucide-react'
 import { searchGoogleBooks } from '../../services/searchGoogleBooks';
 import type { GoogleBookResult } from '../../services/searchGoogleBooks';
@@ -107,7 +107,7 @@ function AddTomePage() {
         const authorInput = form.elements.namedItem('author') as HTMLInputElement | null
 
         if(titleInput) {
-            titleInput.value = formatTitle(book.title)
+            titleInput.value = book.title.trim()
         }
         if(authorInput) {
             authorInput.value = formatAuthor(book.author)
@@ -138,7 +138,9 @@ function AddTomePage() {
 
         //Limpia espacios y normaliza la capitalización del título.
         const rawTitle = String(formData.get('title') ?? '').trim()
-        const title = formatTitle(rawTitle)
+        const title = selectedBook
+            ? selectedBook.title.trim()
+            : formatTitle(rawTitle)
         const author = String(formData.get('author') ?? '').trim()
         const tomeType = String(formData.get('type') ?? '')
         const tomeStatus = String(formData.get('status') ?? '')
@@ -183,7 +185,9 @@ function AddTomePage() {
                     : null,
                 //Datos del catálogo si se seleccionó un resultado, si no, null.
                 cover_url: selectedBook?.coverUrl ?? null,
-                synopsis: selectedBook?.synopsis ?? null,
+                synopsis: selectedBook?.synopsis
+                ? stripHTML(selectedBook.synopsis)
+                : null,
             })
         
         //Si Supabase devuelve error, informa al user.
@@ -356,7 +360,7 @@ function AddTomePage() {
                             {/*Vista previa de la sinopsis de la obra seleccionada.*/}
                             {selectedBook && (
                                 <p className={styles.catalogSynopsis}>
-                                    {selectedBook.synopsis}
+                                    {selectedBook.synopsis && stripHTML(selectedBook.synopsis)}
                                 </p>
                             )}
                         </div>

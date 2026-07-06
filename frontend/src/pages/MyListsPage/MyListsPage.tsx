@@ -7,7 +7,7 @@ import {
 import { Link } from 'react-router'
 import styles from './MyListsPage.module.scss'
 import PrivateSidebar from '../../components/PrivateSidebar/PrivateSidebar'
-import { formatTitle, formatAuthor } from '../../utils/text'
+import { formatAuthor } from '../../utils/text'
 import { formatLastUpdated } from '../../utils/dates'
 import { supabase } from '../../lib/supabaseClient'
 
@@ -443,7 +443,7 @@ function MyListsPage() {
                                         className={styles.resultCard}
                                     >
                                         <h3 className={styles.resultTitle}>
-                                            {formatTitle(reading.title)}
+                                            {reading.title}
                                         </h3>
 
                                         <div className={styles.resultMeta}>
