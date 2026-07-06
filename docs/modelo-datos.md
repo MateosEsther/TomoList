@@ -443,26 +443,34 @@ TomoList consulta una API distinta según el `type` de la lectura. El usuario es
 ### 10.2.Google Books (literatura)
 
 - **Documentación:** https://developers.google.com/books
-- **Búsqueda:** `GET https://www.googleapis.com/books/v1/volumes?q={consulta}&key={API_KEY}`
+- **Referencia del endpoint:** https://developers.google.com/books/docs/v1/reference/volumes/list
+- **Implementación:** `frontend/src/services/searchGoogleBooks.ts`
+- **Búsqueda:** `GET https://www.googleapis.com/books/v1/volumes`
+- **Parámetros usados:** `q` (consulta), `key` (API key), `maxResults: 5`, `langRestrict: es`
 - **API key:** obligatoria. Se guarda en `.env` como `VITE_GOOGLE_BOOKS_API_KEY` y no se sube al repositorio.
 - **Campos que se mapean a `Tome`:**
 ```txt
-title       ← volumeInfo.title
-author      ← volumeInfo.authors (unidos si hay varios)
-coverUrl    ← volumeInfo.imageLinks.thumbnail (si existe)
-synopsis    ← volumeInfo.description (si existe)
+title       ← catálogo: volumeInfo.title tal cual; manual: texto del formulario con formatTitle
+author      ← catálogo: volumeInfo.authors unidos con ", "; manual: texto del formulario
+coverUrl    ← volumeInfo.imageLinks.thumbnail (solo si eligió catálogo; si no, null)
+synopsis    ← volumeInfo.description (solo si eligió catálogo; stripHTML al guardar; si no, null)
 ```
 
 ### 10.3.AniList (manga)
 - **Documentación:** https://anilist.gitbook.io/anilist-apidaniel/
-- **Endpoint:** POST https://graphql.anilist.co
-- **API key:** no requiere clave, se identifica la app en el header si AniList lo pide.
+- **Referencia de queries:** https://anilist.gitbook.io/anilist-apidaniel/queries
+- **Playground (probar queries):** https://anilist.github.io/AniList-API-GraphQL-Playground/
+- **Implementación:** `frontend/src/services/searchAniList.ts`
+- **Endpoint:** `POST https://graphql.anilist.co`
+- **Cuerpo:** JSON con `query` (texto GraphQL) y `variables.search` (texto que escribe el usuario)
+- **Query usada:** `Page(page: 1, perPage: 5)` → `media(search: $search, type: MANGA)`
+- **API key:** no requiere clave
 - **Campos que se mapean a `Tome`:**
 ```txt
-title       ← Media.title o title.romaji / title.english (priorizar español/inglés si existe)
-author      ← staff edges con rol Story & Art o autor principal
-coverUrl    ← coverImage.large o coverImage.medium
-synopsis    ← description (puede venir en HTML; limpiar al guardar)
+title       ← catálogo: english → romaji → native; manual: texto del formulario con formatTitle
+author      ← catálogo: staff Story/Art o primer staff; manual: texto del formulario
+coverUrl    ← catálogo: large → medium; si no eligió catálogo, null
+synopsis    ← catálogo: description (stripHTML al guardar); si no, null
 ```
 
 ### 10.4.Reglas de uso
@@ -471,20 +479,8 @@ synopsis    ← description (puede venir en HTML; limpiar al guardar)
 2.Si la API no devuelve `title` o `author`, se usan los introducidos manualmente.
 3.Si faltan `portada` o `sinopsis`, la lectura se guarda con esos campos en null.
 4.No se persiste la respuesta cruda de la API en la base de datos; solo los campos de `Tome`.
-5.El usuario puede guardar sin elegir resultado del catálogo (fallback manual con `formatTitle`).
+5.El usuario puede guardar sin elegir resultado del catálogo (entrada manual).
+6.Si elige un resultado del catálogo, el título se guarda tal cual devuelve la API; si escribe a mano, se aplica `formatTitle`. El autor manual se formatea con `formatAuthor`.
 
-### 10.5.Pendientes de documentación
+---
 
-Ampliar las secciones de cada API cuando la integración esté cerrada y probada en navegador:
-
-**§10.2 Google Books** — añadir:
-
-- **Implementación:** `frontend/src/services/searchGoogleBooks.ts`
-- **Búsqueda usada:** `GET volumes` con `q`, `maxResults: 5`, `langRestrict: es`
-- **Referencia:** https://developers.google.com/books/docs/v1/reference/volumes/list
-
-**§10.3 AniList** — añadir:
-
-- **Implementación:** `frontend/src/services/searchAniList.ts`
-- **Query usada:** `Page` → `media(search, type: MANGA)` con `perPage: 5`
-- **Playground:** https://anilist.github.io/AniList-API-GraphQL-Playground/
