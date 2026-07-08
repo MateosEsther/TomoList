@@ -63,12 +63,16 @@ export async function searchGoogleBooks(query: string): Promise<GoogleBookResult
                 return null
             }
 
+            //Fuerza https en la URL de la imagen porque GoogleBooks devuelve http a veces y bloquea la imagen.
+            const rawCover = volumeInfo.imageLinks?.thumbnail ?? null
+            const coverUrl = rawCover?.replace(/^http:\/\//i, 'https://') ?? null
+
             return {
                 title: volumeInfo.title,
                 //Array -> join para unir los autores.
                 //Si no hay autores, devuelve 'Autor desconocido'.
                 author: volumeInfo.authors?.join(', ') ?? 'Autora/o desconocida/o',
-                coverUrl: volumeInfo.imageLinks?.thumbnail ?? null,
+                coverUrl,
                 synopsis: volumeInfo.description ?? null,
             }
         })
