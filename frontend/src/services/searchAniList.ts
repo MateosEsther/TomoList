@@ -131,10 +131,13 @@ export async function searchAniList(query: string): Promise<AniListResult[]> {
             
             const uniqueAuthors = [...new Set(authorNames)]
 
+            const rawCover = item.coverImage?.large ?? item.coverImage?.medium ?? null
+            const coverUrl = rawCover?.replace(/^http:\/\//i, 'https://') ?? null
+
             return {
                 title,
                 author: uniqueAuthors.join(', ') || 'Mangaka desconocid@',
-                coverUrl: item.coverImage?.large ?? item.coverImage?.medium ?? null,
+                coverUrl,
                 synopsis: item.description ?? null,
             }
         })

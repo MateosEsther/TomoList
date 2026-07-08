@@ -163,19 +163,24 @@ El archivo `vercel.json` define un **rewrite**: cualquier ruta se resuelve contr
 
 ### Supabase (URLs de autenticación)
 
-Tras el primer despliegue, actualizar en **Supabase → Authentication → URL Configuration**:
+Producción: **https://tomolist.vercel.app**
 
-- **Site URL:** dominio de producción de Vercel (por ejemplo `https://tomolist.vercel.app`)
-- **Redirect URLs:** incluir `https://<dominio>/reset-password` y mantener `http://localhost:5173/reset-password` para desarrollo
+En **Supabase → Authentication → URL Configuration**:
+
+- **Site URL:** `https://tomolist.vercel.app`
+- **Redirect URLs:** incluir `https://tomolist.vercel.app/reset-password` y mantener `http://localhost:5173/reset-password` para desarrollo
 
 Necesario para que la recuperación de contraseña funcione en producción.
 
+La **confirmación de email** está activada en Supabase para usuarios reales.
+
 ### Google Books (restricción de API key)
 
-En Google Cloud, añadir el dominio de Vercel a los referrers HTTP de la API key:
+En Google Cloud, los referrers HTTP de la API key incluyen:
 
 ```txt
-https://<dominio>.vercel.app/*
+http://localhost:5173/*
+https://tomolist.vercel.app/*
 ```
 
-La clave ya debe estar restringida a **Books API** y a `http://localhost:5173/*` para desarrollo local.
+La clave está restringida a **Books API**.
