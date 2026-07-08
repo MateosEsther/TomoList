@@ -116,3 +116,66 @@ Se consigue asociando los registros privados al campo  `user_id` de la tabla tom
 aplicando políticas RLS en Supabase.
 Así, aunque las consultas se hagan desde el frontend, Supabase limita el acceso para que cada usuari@ 
 solo tenga acceso a los registros que le pertenecen.
+
+---
+
+## 7.Despliegue frontend -> Vercel
+
+El frontend se despliega en Vercel desde la carpeta `frontend/` del repositorio.
+
+### Configuración del proyecto en Vercel
+
+| Campo | Valor |
+|-------|-------|
+| Root Directory | `frontend` |
+| Framework Preset | Vite |
+| Build Command | `npm run build` |
+| Output Directory | `dist` |
+
+### Variables de entorno
+
+Las mismas que en `frontend/.env.example`:
+
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`
+- `VITE_GOOGLE_BOOKS_API_KEY`
+
+Se configuran en el panel de Vercel (Production y, si aplica, Preview). No se suben al repositorio.
+
+### `frontend/vercel.json`
+
+TomoList es una SPA con React Router. En producción, Vercel solo sirve `index.html` y los archivos estáticos de `dist/assets/`; no existe un archivo HTML por cada ruta (`/mis-listas`, `/listas/manga/read`, etc.).
+
+Sin configuración adicional:
+
+- navegar desde la home con enlaces internos suele funcionar;
+- recargar una ruta o abrir una URL directa devuelve **404**.
+
+El archivo `vercel.json` define un **rewrite**: cualquier ruta se resuelve contra `index.html`. React Router lee la URL del navegador y muestra la página correcta. Los archivos en `/assets/` se sirven antes del rewrite y no se ven afectados.
+
+```json
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
+```
+
+### Supabase (URLs de autenticación)
+
+Tras el primer despliegue, actualizar en **Supabase → Authentication → URL Configuration**:
+
+- **Site URL:** dominio de producción de Vercel (por ejemplo `https://tomolist.vercel.app`)
+- **Redirect URLs:** incluir `https://<dominio>/reset-password` y mantener `http://localhost:5173/reset-password` para desarrollo
+
+Necesario para que la recuperación de contraseña funcione en producción.
+
+### Google Books (restricción de API key)
+
+En Google Cloud, añadir el dominio de Vercel a los referrers HTTP de la API key:
+
+```txt
+https://<dominio>.vercel.app/*
+```
+
+La clave ya debe estar restringida a **Books API** y a `http://localhost:5173/*` para desarrollo local.
